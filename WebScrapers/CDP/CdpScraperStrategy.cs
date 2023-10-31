@@ -7,11 +7,16 @@ using WebScrapingBenchmark.Framework.Config;
 
 namespace WebScrapingBenchmark.WebScrapers.CDP
 {
-    public class CdpScraper : IWebScraper
+    public class CdpScraperStrategy : IWebScraperStrategy
     {
         public string ScraperName { get; set; }
-        public string GetCleanedHtml { get; }
+
         public void GoToUrl(string url)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Load()
         {
             throw new NotImplementedException();
         }
@@ -22,6 +27,11 @@ namespace WebScrapingBenchmark.WebScrapers.CDP
         }
 
         public string ExtractMetadata(Selector selector)
+        {
+            throw new NotImplementedException();
+        }
+
+        string IWebScraperStrategy.GetCleanedHtml()
         {
             throw new NotImplementedException();
         }

@@ -1,13 +1,17 @@
 ﻿using WebScrapingBenchmark.Framework.Config;
 
-namespace WebScrapingBenchmark.WebScrapers.HtmlAgilityPack
+namespace WebScrapingBenchmark.WebScrapers.Anglesharp
 {
-    public class HtmlAgilityPackScraper : IWebScraper
+    public class AnglesharpScraperStrategy : IWebScraperStrategy
     {
         public string ScraperName { get; set; }
-        public string GetCleanedHtml { get; }
 
         public void GoToUrl(string url)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Load()
         {
             throw new NotImplementedException();
         }
@@ -18,6 +22,11 @@ namespace WebScrapingBenchmark.WebScrapers.HtmlAgilityPack
         }
 
         public string ExtractMetadata(Selector selector)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetCleanedHtml()
         {
             throw new NotImplementedException();
         }

@@ -1,6 +1,6 @@
 ﻿namespace WebScrapingBenchmark.Framework.Logging
 {
-        public class ConsoleLogger 
+        public static class ConsoleLogger 
         {
             private static object _lock = new object();
 
@@ -19,7 +19,7 @@
                 WriteLine(message, ConsoleColor.Yellow);
             }
 
-            public void Error(string message, Exception? exception = null)
+            public static void Error(string message, Exception? exception = null)
             {
                 WriteLine(message, ConsoleColor.Red);
 

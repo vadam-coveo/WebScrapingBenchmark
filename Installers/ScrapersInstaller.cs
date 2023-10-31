@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Castle.MicroKernel.Registration;
+﻿using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using WebScrapingBenchmark.WebScrapers;
@@ -20,10 +15,7 @@ namespace WebScrapingBenchmark.Installers
 
         private void RegisterAnglesharp(IWindsorContainer container)
         {
-            container.Register(Component.For<IWebScraper>().ImplementedBy<AnglesharpScraper>());
-
+            container.Register(Component.For<IWebScraperStrategy>().ImplementedBy<AnglesharpScraperStrategy>().LifestyleTransient().Named(nameof(AnglesharpScraperStrategy)));
         }
-
-        // todo : the rest
     }
 }

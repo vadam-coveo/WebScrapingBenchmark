@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
+using Castle.MicroKernel.SubSystems.Conversion;
 using Castle.Windsor;
 using WebScrapingBenchmark.Framework.Config;
 using WebScrapingBenchmark.Framework.ScenarioRunner;
+using WebScrapingBenchmark.WebScrapers;
 using Component = Castle.MicroKernel.Registration.Component;
 
 namespace WebScrapingBenchmark.Installers
@@ -19,16 +21,49 @@ namespace WebScrapingBenchmark.Installers
 
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
-            foreach (var scenario in Scenarios)
+            container.Install(new ScrapersInstaller());
+
+            var scenarioNames = RegisterScenarios(container);
+            var scrapingStrategies = GetAllRegisteredScrapingStrategyComponentNames(container);
+
+            RegisterRunners(container, scenarioNames, scrapingStrategies);
+        }
+
+        private void RegisterRunners(IWindsorContainer container, IEnumerable<string> scenarioComponentNames, IEnumerable<string> scrapingStrategies)
+        {
+            foreach (var scenario in scenarioComponentNames)
             {
-                RegisterScenario(scenario, container);
+                foreach (var strategy in scrapingStrategies)
+                {
+                    container.Register(Component.For<IScenarioRunner>().ImplementedBy<ScenarioRunner>()
+                        .LifestyleTransient()
+                        .DependsOn(Dependency.OnComponent(typeof(ConfigurationScenario), scenario), Dependency.OnComponent(typeof(IWebScraperStrategy), strategy))
+                        .Named($"{strategy} - {scenario}")
+                    );
+                }
             }
         }
 
-        private void RegisterScenario(ConfigurationScenario scenario, IWindsorContainer container)
+        /// <summary>
+        /// Registers all scenarios, returns all their component names
+        /// </summary>
+        private List<string> RegisterScenarios(IWindsorContainer container)
         {
-            container.Register(Component.For<ConfigurationScenario>().Instance(scenario).Named(scenario.ScenarioName));
-            container.Register(Component.For<IScenarioRunner>().ImplementedBy<ScenarioRunner>().DependsOn(Dependency.OnComponent(typeof(ConfigurationScenario), scenario.ScenarioName)));
+            foreach (var scenario in Scenarios)
+            {
+                container.Register(Component.For<ConfigurationScenario>().Instance(scenario).Named(scenario.ScenarioName));
+            }
+
+            return Scenarios.Select(x => x.ScenarioName).ToList();
+        }
+
+        /// <summary>
+        /// Returns component names for all registered scrapingStrategies
+        /// </summary>
+        private List<string> GetAllRegisteredScrapingStrategyComponentNames(IWindsorContainer container)
+        {
+            var handlers = container.Kernel.GetHandlers(typeof(IWebScraperStrategy));
+            return handlers.Select(h => h.ComponentModel.Name).ToList();
         }
     }
 }

@@ -4,6 +4,6 @@
     {
         public string ScenarioName;
         public List<string> Urls;
-        public List<ScrapingSetting> Settings;
+        public ScrapingSetting Settings;
     }
 }

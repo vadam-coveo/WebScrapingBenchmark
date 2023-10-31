@@ -5,7 +5,7 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner;
 
 public interface IScenarioRunner
 {
-    IWebScraper[] WebScrapers { get; }
+    IWebScraperStrategy WebScraper { get; }
     ConfigurationScenario Scenario { get; }
     void RunScenario();
 }

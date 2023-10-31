@@ -1,18 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebScrapingBenchmark.Framework.Config;
+﻿using WebScrapingBenchmark.Framework.Config;
 
-namespace WebScrapingBenchmark.WebScrapers.Anglesharp
+namespace WebScrapingBenchmark.WebScrapers.HtmlAgilityPack
 {
-    public class AnglesharpScraper : IWebScraper
+    public class HtmlAgilityPackScraperStrategy : IWebScraperStrategy
     {
         public string ScraperName { get; set; }
-        public string GetCleanedHtml { get; private set; }
+
+        public string GetCleanedHtml()
+        {
+            throw new NotImplementedException();
+        }
 
         public void GoToUrl(string url)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Load()
         {
             throw new NotImplementedException();
         }

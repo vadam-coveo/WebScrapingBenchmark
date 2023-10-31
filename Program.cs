@@ -12,13 +12,26 @@ var scenarios = ScenarioLoader.LoadScenarios(Directory.GetCurrentDirectory() + "
 
 var container = new WindsorContainer();
 container.Install(new FrameworkInstaller(),
-                    new RunnerInstaller(scenarios), 
-                    new ScrapersInstaller()
+                    new RunnerInstaller(scenarios)
                     );
 
 var runners = container.ResolveAll<IScenarioRunner>();
 
 foreach (var runner in runners)
 {
-    runner.RunScenario();
+    try
+    {
+        runner.RunScenario();
+    }
+    finally
+    {
+        container.Release(runner);
+    }
 }
+
+// todo : interpret metrics
+
+container.Dispose();
+
+// to allow chromedrivers to actually get killed
+Thread.Sleep(TimeSpan.FromSeconds(30));
