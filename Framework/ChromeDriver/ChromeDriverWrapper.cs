@@ -6,7 +6,13 @@ using WebScrapingBenchmark.Framework.Logging;
 
 namespace ChromedriverWrapper
 {
-    public class ChromeDriverWrapper : IDisposable
+    public interface IChromeDriverWrapper
+    {
+        ChromeDriver Driver { get; }
+        string GetHtml(string url, TimeSpan jsTimeout);
+    }
+
+    public class ChromeDriverWrapper : IDisposable, IChromeDriverWrapper
     {
         const string WINDOWS_CHROMIUM_RELATIVE_BINARY_PATH = @"Chromium\Application\chrome.exe";
 
