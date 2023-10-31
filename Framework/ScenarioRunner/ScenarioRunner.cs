@@ -62,7 +62,7 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
                         Duration = Evaluate(() => WebScraper.ExcludeHtml(selector))
                     };
 
-                    result.MetadataExtractionTiming.Add(timing);
+                    result.ContentExclusionTiming.Add(timing);
                 }
                 catch (Exception ex)
                 {
