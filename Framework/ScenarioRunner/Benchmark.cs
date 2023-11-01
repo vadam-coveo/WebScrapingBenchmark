@@ -1,5 +1,4 @@
-﻿
-namespace WebScrapingBenchmark.Framework.ScenarioRunner
+﻿namespace WebScrapingBenchmark.Framework.ScenarioRunner
 {
     public class Benchmark
     {
@@ -7,6 +6,16 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
         public string ScraperName;
 
         public List<ScrapingBenchmarkResult> BenchmarkPerUrl = new();
+
+        public Lazy<TimeSpan> AverageGoToUrl => new Lazy<TimeSpan>(() => BenchmarkPerUrl.Select(url => url.GoToUrlTiming).Average());
+        public Lazy<TimeSpan> AverageLoad => new Lazy<TimeSpan>(() => BenchmarkPerUrl.Select(url => url.LoadTiming).Average());
+        public Lazy<TimeSpan> AverageGetHtmlResult => new Lazy<TimeSpan>(() => BenchmarkPerUrl.Select(url => url.GetHtmlResultTiming).Average());
+        public Lazy<TimeSpan> AverageMetadataExtraction => new Lazy<TimeSpan>(() => BenchmarkPerUrl.SelectMany(url => url.MetadataExtractionTiming.Select(timing => timing.Duration)).Average());
+        public Lazy<TimeSpan> AverageContentExclusion => new Lazy<TimeSpan>(() => BenchmarkPerUrl.SelectMany(url => url.ContentExclusionTiming.Select(timing => timing.Duration)).Average());
+
+        public Lazy<TimeSpan> FastestGoToUrl => new Lazy<TimeSpan>(() => BenchmarkPerUrl.Select(url => url.GoToUrlTiming).Min());
+        public Lazy<TimeSpan> FastestLoad => new Lazy<TimeSpan>(() => BenchmarkPerUrl.Select(url => url.LoadTiming).Min());
+        public Lazy<TimeSpan> FastestGetHtmlResult => new Lazy<TimeSpan>(() => BenchmarkPerUrl.Select(url => url.GetHtmlResultTiming).Min());
     }
 
     public class ScrapingBenchmarkResult
