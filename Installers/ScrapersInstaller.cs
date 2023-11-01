@@ -1,8 +1,11 @@
-﻿using Castle.MicroKernel.Registration;
+﻿using System.ComponentModel;
+using Castle.Facilities.TypedFactory;
+using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
+using WebScrapingBenchmark.Framework.HtmlProcessors;
 using WebScrapingBenchmark.WebScrapingStrategies;
-using WebScrapingBenchmark.WebScrapingStrategies.Anglesharp;
+using Component = Castle.MicroKernel.Registration.Component;
 
 namespace WebScrapingBenchmark.Installers
 {
@@ -10,12 +13,26 @@ namespace WebScrapingBenchmark.Installers
     {
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
-            RegisterAnglesharp(container);
+            RegisterStrategies(container);
+            RegisterHtmlProcessors(container);
         }
 
-        private void RegisterAnglesharp(IWindsorContainer container)
+        private void RegisterStrategies(IWindsorContainer container)
         {
-            container.Register(Component.For<IWebScraperStrategy>().ImplementedBy<AnglesharpScraperStrategy>().LifestyleTransient().Named(nameof(AnglesharpScraperStrategy)));
+            container.Register(Classes.FromAssemblyContaining<IWebScraperStrategy>()
+                .InSameNamespaceAs<IWebScraperStrategy>()
+                .WithServiceAllInterfaces()
+                .LifestyleTransient()
+            );
+        }
+
+        private void RegisterHtmlProcessors(IWindsorContainer container)
+        {
+            container.Register(
+                Component.For<IHtmlProcessorFactory>().AsFactory(),
+                Component.For<IHtmlProcessor>().ImplementedBy<AnglesharpHtmlProcessor>().LifestyleTransient()
+                
+            );
         }
     }
 }

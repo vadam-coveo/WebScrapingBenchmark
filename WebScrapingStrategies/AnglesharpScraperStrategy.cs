@@ -1,6 +1,6 @@
 ﻿using WebScrapingBenchmark.Framework.Config;
 
-namespace WebScrapingBenchmark.WebScrapingStrategies.Anglesharp
+namespace WebScrapingBenchmark.WebScrapingStrategies
 {
     public class AnglesharpScraperStrategy : IWebScraperStrategy
     {
@@ -8,27 +8,26 @@ namespace WebScrapingBenchmark.WebScrapingStrategies.Anglesharp
 
         public void GoToUrl(string url)
         {
-            throw new NotImplementedException();
         }
 
         public void Load()
         {
-            throw new NotImplementedException();
+    
         }
 
         public void ExcludeHtml(Selector selector)
         {
-            throw new NotImplementedException();
+            
         }
 
         public string ExtractMetadata(Selector selector)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public string GetCleanedHtml()
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }

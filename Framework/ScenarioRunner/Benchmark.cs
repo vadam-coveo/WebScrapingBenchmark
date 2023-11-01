@@ -6,7 +6,7 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
         public string ScenarioName;
         public string ScraperName;
 
-        public List<ScrapingBenchmarkResult> BenchmarkPerUrl = new List<ScrapingBenchmarkResult>();
+        public List<ScrapingBenchmarkResult> BenchmarkPerUrl = new();
     }
 
     public class ScrapingBenchmarkResult
@@ -16,8 +16,8 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
         public TimeSpan LoadTiming;
         public TimeSpan GetHtmlResultTiming;
 
-        public List<ElementTiming> MetadataExtractionTiming = new List<ElementTiming>();
-        public List<ElementTiming> ContentExclusionTiming = new List<ElementTiming>();
+        public List<ElementTiming> MetadataExtractionTiming = new();
+        public List<ElementTiming> ContentExclusionTiming = new ();
     }
     
     public class ElementTiming

@@ -2,7 +2,7 @@
 using WebScrapingBenchmark.Framework.ChromeDriver;
 using WebScrapingBenchmark.Framework.Config;
 
-namespace WebScrapingBenchmark.WebScrapingStrategies.Baseline
+namespace WebScrapingBenchmark.WebScrapingStrategies
 {
     public class BaselineStrategy : IWebScraperStrategy
     {
@@ -23,22 +23,20 @@ namespace WebScrapingBenchmark.WebScrapingStrategies.Baseline
 
         public void Load()
         {
-            throw new NotImplementedException();
         }
 
         public void ExcludeHtml(Selector selector)
         {
-            throw new NotImplementedException();
         }
 
         public string ExtractMetadata(Selector selector)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public string GetCleanedHtml()
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }
