@@ -1,6 +1,6 @@
 ﻿using WebScrapingBenchmark.Framework.Config;
 
-namespace WebScrapingBenchmark.WebScrapers
+namespace WebScrapingBenchmark.WebScrapingStrategies
 {
     public interface IWebScraperStrategy
     {

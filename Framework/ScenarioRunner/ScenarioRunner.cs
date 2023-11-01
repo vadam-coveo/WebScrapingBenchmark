@@ -1,6 +1,6 @@
 ﻿using WebScrapingBenchmark.Framework.Config;
 using WebScrapingBenchmark.Framework.Logging;
-using WebScrapingBenchmark.WebScrapers;
+using WebScrapingBenchmark.WebScrapingStrategies;
 
 namespace WebScrapingBenchmark.Framework.ScenarioRunner
 {

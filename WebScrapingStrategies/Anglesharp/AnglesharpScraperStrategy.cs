@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebScrapingBenchmark.Framework.Config;
+﻿using WebScrapingBenchmark.Framework.Config;
 
-namespace WebScrapingBenchmark.WebScrapers.CDP
+namespace WebScrapingBenchmark.WebScrapingStrategies.Anglesharp
 {
-    public class CdpScraperStrategy : IWebScraperStrategy
+    public class AnglesharpScraperStrategy : IWebScraperStrategy
     {
         public string ScraperName { get; set; }
 
@@ -31,7 +26,7 @@ namespace WebScrapingBenchmark.WebScrapers.CDP
             throw new NotImplementedException();
         }
 
-        string IWebScraperStrategy.GetCleanedHtml()
+        public string GetCleanedHtml()
         {
             throw new NotImplementedException();
         }

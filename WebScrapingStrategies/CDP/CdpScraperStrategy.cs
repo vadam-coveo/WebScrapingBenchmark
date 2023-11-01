@@ -1,8 +1,8 @@
 ﻿using WebScrapingBenchmark.Framework.Config;
 
-namespace WebScrapingBenchmark.WebScrapers.Anglesharp
+namespace WebScrapingBenchmark.WebScrapingStrategies.CDP
 {
-    public class AnglesharpScraperStrategy : IWebScraperStrategy
+    public class CdpScraperStrategy : IWebScraperStrategy
     {
         public string ScraperName { get; set; }
 
@@ -26,7 +26,7 @@ namespace WebScrapingBenchmark.WebScrapers.Anglesharp
             throw new NotImplementedException();
         }
 
-        public string GetCleanedHtml()
+        string IWebScraperStrategy.GetCleanedHtml()
         {
             throw new NotImplementedException();
         }

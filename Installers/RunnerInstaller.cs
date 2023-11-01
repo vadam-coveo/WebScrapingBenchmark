@@ -5,7 +5,7 @@ using Castle.MicroKernel.SubSystems.Conversion;
 using Castle.Windsor;
 using WebScrapingBenchmark.Framework.Config;
 using WebScrapingBenchmark.Framework.ScenarioRunner;
-using WebScrapingBenchmark.WebScrapers;
+using WebScrapingBenchmark.WebScrapingStrategies;
 using Component = Castle.MicroKernel.Registration.Component;
 
 namespace WebScrapingBenchmark.Installers

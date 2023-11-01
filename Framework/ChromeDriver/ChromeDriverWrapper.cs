@@ -4,11 +4,11 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using WebScrapingBenchmark.Framework.Logging;
 
-namespace ChromedriverWrapper
+namespace WebScrapingBenchmark.Framework.ChromeDriver
 {
     public interface IChromeDriverWrapper
     {
-        ChromeDriver Driver { get; }
+        OpenQA.Selenium.Chrome.ChromeDriver Driver { get; }
         string GetHtml(string url, TimeSpan jsTimeout);
     }
 
@@ -17,7 +17,7 @@ namespace ChromedriverWrapper
         const string WINDOWS_CHROMIUM_RELATIVE_BINARY_PATH = @"Chromium\Application\chrome.exe";
 
         private int _processId;
-        public ChromeDriver Driver { get; }
+        public OpenQA.Selenium.Chrome.ChromeDriver Driver { get; }
         private ChromeDriverService Service { get; }
 
         public ChromeDriverWrapper(string? userAgent = null)
@@ -59,7 +59,7 @@ namespace ChromedriverWrapper
 
             options.BinaryLocation = location;
 
-            Driver = new ChromeDriver(Service, options);
+            Driver = new OpenQA.Selenium.Chrome.ChromeDriver(Service, options);
 
             if (_processId == 0)
             {

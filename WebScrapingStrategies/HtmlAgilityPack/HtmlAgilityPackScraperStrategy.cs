@@ -1,6 +1,6 @@
 ﻿using WebScrapingBenchmark.Framework.Config;
 
-namespace WebScrapingBenchmark.WebScrapers.HtmlAgilityPack
+namespace WebScrapingBenchmark.WebScrapingStrategies.HtmlAgilityPack
 {
     public class HtmlAgilityPackScraperStrategy : IWebScraperStrategy
     {

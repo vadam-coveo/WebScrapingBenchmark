@@ -3,7 +3,7 @@ using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
-using ChromedriverWrapper;
+using WebScrapingBenchmark.Framework.ChromeDriver;
 
 namespace WebScrapingBenchmark.Installers
 {

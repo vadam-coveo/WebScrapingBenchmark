@@ -1,8 +1,8 @@
 ﻿using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
-using WebScrapingBenchmark.WebScrapers;
-using WebScrapingBenchmark.WebScrapers.Anglesharp;
+using WebScrapingBenchmark.WebScrapingStrategies;
+using WebScrapingBenchmark.WebScrapingStrategies.Anglesharp;
 
 namespace WebScrapingBenchmark.Installers
 {

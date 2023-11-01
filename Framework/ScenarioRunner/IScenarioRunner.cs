@@ -1,5 +1,5 @@
 ﻿using WebScrapingBenchmark.Framework.Config;
-using WebScrapingBenchmark.WebScrapers;
+using WebScrapingBenchmark.WebScrapingStrategies;
 
 namespace WebScrapingBenchmark.Framework.ScenarioRunner;
 
