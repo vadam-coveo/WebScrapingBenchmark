@@ -8,11 +8,13 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
     {
         public IWebScraperStrategy WebScraper { get; }
         public ConfigurationScenario Scenario { get; }
+        public IBenchmarkAggregator BenchmarkAggregator { get; }
 
-        public ScenarioRunner(IWebScraperStrategy webScraper, ConfigurationScenario scenario)
+        public ScenarioRunner(IWebScraperStrategy webScraper, ConfigurationScenario scenario, IBenchmarkAggregator benchmarkAggregator)
         {
             WebScraper = webScraper;
             Scenario = scenario;
+            BenchmarkAggregator = benchmarkAggregator;
         }
 
         public void RunScenario()
@@ -22,11 +24,12 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
             benchmark.ScenarioName = Scenario.ScenarioName;
             benchmark.ScraperName = WebScraper.GetType().Name;
 
-
             foreach (var url in Scenario.Urls)
             {
                 benchmark.BenchmarkPerUrl.Add(Evaluate(url));
             }
+
+            BenchmarkAggregator.AddBenchmark(benchmark);
 
             ConsoleLogger.Info($"Done with scenario : {Scenario.ScenarioName} with scraper {WebScraper.GetType().Name} ");
         }

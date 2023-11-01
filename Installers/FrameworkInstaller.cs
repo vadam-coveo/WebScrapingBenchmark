@@ -4,6 +4,7 @@ using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using WebScrapingBenchmark.Framework.ChromeDriver;
+using WebScrapingBenchmark.Framework.ScenarioRunner;
 
 namespace WebScrapingBenchmark.Installers
 {
@@ -15,6 +16,7 @@ namespace WebScrapingBenchmark.Installers
             container.AddFacility<TypedFactoryFacility>();
 
             container.Register(Component.For<IChromeDriverWrapper>().ImplementedBy<ChromeDriverWrapper>()); // we'll try with 1 singleton instance for now since we're not running anything in parallel
+            container.Register(Component.For<IBenchmarkAggregator>().ImplementedBy<BenchmarkAggregator>().LifestyleSingleton());
         }
     }
 }

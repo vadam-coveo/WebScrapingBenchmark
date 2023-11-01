@@ -29,6 +29,8 @@ foreach (var runner in runners)
     }
 }
 
+var benchmarkAggregator = container.Resolve<IBenchmarkAggregator>();
+
 // todo : interpret metrics
 
 container.Dispose();
