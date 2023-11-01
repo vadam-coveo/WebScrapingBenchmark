@@ -10,6 +10,8 @@ namespace WebScrapingBenchmark.Framework.HtmlProcessors
     {
         IHtmlProcessor CreateAnglesharpHtmlProcessor(string html);
 
+        IHtmlProcessor CreateHtmlAgilityPackHtmlProcessor(string html);
+
         void Release(IHtmlProcessor processor);
     }
 }

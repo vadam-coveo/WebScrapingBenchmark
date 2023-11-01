@@ -9,7 +9,7 @@ using HtmlAgilityPack;
 
 namespace WebScrapingBenchmark.Framework.Scrapers
 {
-    internal class CSSHelper
+    internal class ProcessorHelper
     {
 
         /// <summary>
@@ -43,7 +43,6 @@ namespace WebScrapingBenchmark.Framework.Scrapers
         {
             return !string.IsNullOrEmpty(html) ? HtmlEntity.DeEntitize(html).Trim() : html;
         }
-
 
         /// <summary>
         /// Provides an object representation of a CSS selector path.

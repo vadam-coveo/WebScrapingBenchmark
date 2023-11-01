@@ -15,7 +15,8 @@ namespace WebScrapingBenchmark.WebScrapingStrategies
 
         private string htmlbody;
 
-        private Lazy<IHtmlProcessor> AnglesharpProcessor; 
+        private Lazy<IHtmlProcessor> AnglesharpProcessor;
+        private Lazy<IHtmlProcessor> HtmlAgilityPackHtmlProcessor;
 
         public BaselineStrategy(IChromeDriverWrapper driverWrapper, IHtmlProcessorFactory htmlProcessorFactory)
         {
@@ -27,6 +28,7 @@ namespace WebScrapingBenchmark.WebScrapingStrategies
         {
             htmlbody = DriverWrapper.GetHtml(url, TimeSpan.FromSeconds(2));
             ResetAnglesharp(htmlbody);
+            ResetAgilityPack(htmlbody);
         }
 
         public void Load()
@@ -67,6 +69,16 @@ namespace WebScrapingBenchmark.WebScrapingStrategies
             }
 
             AnglesharpProcessor = new Lazy<IHtmlProcessor>(() => HtmlProcessorFactory.CreateAnglesharpHtmlProcessor(html));
+        }
+
+        private void ResetAgilityPack(string html)
+        {
+            if (HtmlAgilityPackHtmlProcessor?.IsValueCreated ?? false)
+            {
+                HtmlProcessorFactory.Release(HtmlAgilityPackHtmlProcessor.Value);
+            }
+
+            HtmlAgilityPackHtmlProcessor = new Lazy<IHtmlProcessor>(() => HtmlProcessorFactory.CreateHtmlAgilityPackHtmlProcessor(html));
         }
     }
 }

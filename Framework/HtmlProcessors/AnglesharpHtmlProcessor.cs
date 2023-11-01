@@ -8,7 +8,7 @@ using AngleSharp.Html.Parser;
 using WebScrapingBenchmark.Framework.Config;
 using AngleSharp.Dom;
 using WebScrapingBenchmark.Framework.Logging;
-using static WebScrapingBenchmark.Framework.Scrapers.CSSHelper;
+using static WebScrapingBenchmark.Framework.Scrapers.ProcessorHelper;
 using ConsoleLogger = WebScrapingBenchmark.Framework.Logging.ConsoleLogger;
 
 namespace WebScrapingBenchmark.Framework.HtmlProcessors
