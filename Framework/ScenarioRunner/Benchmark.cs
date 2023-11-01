@@ -6,7 +6,7 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
         public string ScenarioName;
         public string ScraperName;
 
-        public List<ScrapingBenchmarkResult> BenchmarkPerUrl;
+        public List<ScrapingBenchmarkResult> BenchmarkPerUrl = new List<ScrapingBenchmarkResult>();
     }
 
     public class ScrapingBenchmarkResult
