@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
+using AngleSharp.Dom;
+using System.Threading;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using WebScrapingBenchmark.Framework.Logging;
@@ -19,9 +21,11 @@ namespace WebScrapingBenchmark.Framework.ChromeDriver
         private int _processId;
         public OpenQA.Selenium.Chrome.ChromeDriver Driver { get; }
         private ChromeDriverService Service { get; }
+        private ICache<CachedRequest> Cache { get; }
 
-        public ChromeDriverWrapper(string? userAgent = null)
+        public ChromeDriverWrapper(ICache<CachedRequest> cache, string? userAgent = null)
         {
+            Cache = cache;
             Service = ChromeDriverService.CreateDefaultService();
             Service.HideCommandPromptWindow = true;
 
@@ -70,9 +74,29 @@ namespace WebScrapingBenchmark.Framework.ChromeDriver
 
         public string GetHtml(string url, TimeSpan jsTimeout)
         {
-            Driver.Navigate().GoToUrl(url);
-            Thread.Sleep(jsTimeout);
-            return Driver.PageSource;
+            var shouldSimulateRequestDelay = true;
+
+            var result = Cache.GetOrAdd(url, _ =>
+            {
+                shouldSimulateRequestDelay = false;
+
+                var start = DateTime.Now;
+                Driver.Navigate().GoToUrl(url);
+                Thread.Sleep(jsTimeout);
+
+                return new CachedRequest
+                {
+                    Delay = DateTime.Now - start,
+                    htmlBody = Driver.PageSource
+                };
+            });
+
+            if (shouldSimulateRequestDelay)
+            {
+                Thread.Sleep(result.Delay);
+            }
+
+            return result.htmlBody;
         }
 
         public void Dispose()
