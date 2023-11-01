@@ -18,14 +18,15 @@ namespace WebScrapingBenchmark.WebScrapingStrategies
         public void Load()
         {
         }
-        
-        public void ExcludeHtml(Selector selector)
+
+        public bool ExcludeHtml(Selector selector)
         {
+            return false;
         }
 
-        public string ExtractMetadata(Selector selector)
+        public IEnumerable<string> ExtractMetadata(Selector selector)
         {
-            return null;
+            return Enumerable.Empty<string>();
         }
     }
 }

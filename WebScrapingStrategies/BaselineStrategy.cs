@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium.Chrome;
+using System.Linq;
 using WebScrapingBenchmark.Framework.ChromeDriver;
 using WebScrapingBenchmark.Framework.Config;
 using WebScrapingBenchmark.Framework.HtmlProcessors;
@@ -13,7 +14,7 @@ namespace WebScrapingBenchmark.WebScrapingStrategies
 
         private ChromeDriver Driver => DriverWrapper.Driver;
 
-        private string htmlbody;
+        private string _htmlBody;
 
         private Lazy<IHtmlProcessor> AnglesharpProcessor;
         private Lazy<IHtmlProcessor> HtmlAgilityPackHtmlProcessor;
@@ -26,26 +27,29 @@ namespace WebScrapingBenchmark.WebScrapingStrategies
 
         public void GoToUrl(string url)
         {
-            htmlbody = DriverWrapper.GetHtml(url, TimeSpan.FromSeconds(2));
-            ResetAnglesharp(htmlbody);
-            ResetAgilityPack(htmlbody);
+            _htmlBody = DriverWrapper.GetHtml(url, TimeSpan.FromSeconds(2));
+            ResetAnglesharp();
+            ResetAgilityPack();
         }
 
         public void Load()
         {
         }
 
-        public void ExcludeHtml(Selector selector)
+        public bool ExcludeHtml(Selector selector)
         {
-            var excluded = AnglesharpProcessor.Value.Remove(selector);
-            ConsoleLogger.Debug($"          Excluded = {excluded} for selector {selector.Path}");
+            var processor = GetProcessorForSelector(selector);
+
+            if (!processor.Remove(selector)) return false;
+
+            _htmlBody = processor.GetHtmlBody();
+            ResetProcessorThatCantProcessSelector(selector);
+            return true;
         }
 
-        public string ExtractMetadata(Selector selector)
+        public IEnumerable<string> ExtractMetadata(Selector selector)
         {
-            var result = AnglesharpProcessor.Value.Extract(selector);
-            ConsoleLogger.Debug($"          Extracted = {result.Count()} for selector {selector.Path}");
-            return null;
+            return GetProcessorForSelector(selector).Extract(selector);
         }
 
         public string GetCleanedHtml()
@@ -56,29 +60,47 @@ namespace WebScrapingBenchmark.WebScrapingStrategies
         public void Dispose()
         {
             if (AnglesharpProcessor.IsValueCreated)
-            {
                 HtmlProcessorFactory.Release(AnglesharpProcessor.Value);
-            }
+            
+            if (HtmlAgilityPackHtmlProcessor.IsValueCreated)
+                HtmlProcessorFactory.Release(HtmlAgilityPackHtmlProcessor.Value);
         }
 
-        private void ResetAnglesharp(string html)
+        private IHtmlProcessor GetProcessorForSelector(Selector selector)
+        {
+            if (selector.Type == SelectorType.CSS)
+                return  AnglesharpProcessor.Value;
+
+            return HtmlAgilityPackHtmlProcessor.Value;
+        }
+
+        private void ResetProcessorThatCantProcessSelector(Selector selector)
+        {
+            if (selector.Type == SelectorType.CSS)
+            {
+                ResetAgilityPack();
+            }
+            ResetAnglesharp();
+        }
+
+        private void ResetAnglesharp()
         {
             if (AnglesharpProcessor?.IsValueCreated ?? false)
             {
                 HtmlProcessorFactory.Release(AnglesharpProcessor.Value);
             }
 
-            AnglesharpProcessor = new Lazy<IHtmlProcessor>(() => HtmlProcessorFactory.CreateAnglesharpHtmlProcessor(html));
+            AnglesharpProcessor = new Lazy<IHtmlProcessor>(() => HtmlProcessorFactory.CreateAnglesharpHtmlProcessor(_htmlBody));
         }
 
-        private void ResetAgilityPack(string html)
+        private void ResetAgilityPack()
         {
             if (HtmlAgilityPackHtmlProcessor?.IsValueCreated ?? false)
             {
                 HtmlProcessorFactory.Release(HtmlAgilityPackHtmlProcessor.Value);
             }
 
-            HtmlAgilityPackHtmlProcessor = new Lazy<IHtmlProcessor>(() => HtmlProcessorFactory.CreateHtmlAgilityPackHtmlProcessor(html));
+            HtmlAgilityPackHtmlProcessor = new Lazy<IHtmlProcessor>(() => HtmlProcessorFactory.CreateHtmlAgilityPackHtmlProcessor(_htmlBody));
         }
     }
 }

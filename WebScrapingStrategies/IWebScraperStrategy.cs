@@ -19,13 +19,13 @@ namespace WebScrapingBenchmark.WebScrapingStrategies
         /// Method to exclude a specific section of html
         /// </summary>
         /// <param name="selector"></param>
-        public void ExcludeHtml(Selector selector);
+        public bool ExcludeHtml(Selector selector);
 
         /// <summary>
         /// Method to extract metadata by selector
         /// </summary>
         /// <param name="selector"></param>
-        public string ExtractMetadata(Selector selector);
+        public IEnumerable<string> ExtractMetadata(Selector selector);
 
         /// <summary>
         /// Method to provide the end-result html

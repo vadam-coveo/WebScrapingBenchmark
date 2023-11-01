@@ -65,7 +65,7 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
                     var timing = new ElementTiming
                     {
                         SelectorName = selector.Path,
-                        Duration = Evaluate(() => WebScraper.ExcludeHtml(selector))
+                        Duration = Evaluate(()=> ExcludeHtml(selector))
                     };
 
                     result.ContentExclusionTiming.Add(timing);
@@ -87,7 +87,7 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
                     var timing = new ElementTiming
                     {
                         SelectorName = metadata.Value.Path,
-                        Duration = Evaluate(() => WebScraper.ExtractMetadata(metadata.Value))
+                        Duration = Evaluate(() => ExtractMetadata(metadata.Value))
                     };
 
                     result.MetadataExtractionTiming.Add(timing);
@@ -98,6 +98,18 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
                         $"Unable to evaluate metadata extraction for key {metadata.Key} in scenario {Scenario.ScenarioName}", ex);
                 }
             }
+        }
+
+        private void ExcludeHtml(Selector selector)
+        {
+            var result = WebScraper.ExcludeHtml(selector);
+            ConsoleLogger.Debug($"          Excluded = {result} for {selector.Type} selector {selector.Path}");
+        }
+
+        private void ExtractMetadata(Selector selector)
+        {
+            var result = WebScraper.ExtractMetadata(selector);
+            ConsoleLogger.Debug($"          Extracted = {result.Count()} values for {selector.Type} selector {selector.Path}");
         }
 
         private TimeSpan Evaluate(Action action)
