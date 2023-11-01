@@ -1,6 +1,6 @@
 ﻿using WebScrapingBenchmark.Framework.Config;
 
-namespace WebScrapingBenchmark.WebScrapingStrategies.CDP
+namespace WebScrapingBenchmark.WebScrapingStrategies
 {
     public class CdpScraperStrategy : IWebScraperStrategy
     {
@@ -8,27 +8,26 @@ namespace WebScrapingBenchmark.WebScrapingStrategies.CDP
 
         public void GoToUrl(string url)
         {
-            throw new NotImplementedException();
         }
 
         public void Load()
         {
-            throw new NotImplementedException();
+            
         }
 
         public void ExcludeHtml(Selector selector)
         {
-            throw new NotImplementedException();
+            
         }
 
         public string ExtractMetadata(Selector selector)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
-        string IWebScraperStrategy.GetCleanedHtml()
+        public string GetCleanedHtml()
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }

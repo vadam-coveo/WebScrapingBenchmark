@@ -1,6 +1,6 @@
 ﻿using WebScrapingBenchmark.Framework.Config;
 
-namespace WebScrapingBenchmark.WebScrapingStrategies.HtmlAgilityPack
+namespace WebScrapingBenchmark.WebScrapingStrategies
 {
     public class HtmlAgilityPackScraperStrategy : IWebScraperStrategy
     {
@@ -8,27 +8,24 @@ namespace WebScrapingBenchmark.WebScrapingStrategies.HtmlAgilityPack
 
         public string GetCleanedHtml()
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public void GoToUrl(string url)
         {
-            throw new NotImplementedException();
         }
 
         public void Load()
         {
-            throw new NotImplementedException();
         }
 
         public void ExcludeHtml(Selector selector)
         {
-            throw new NotImplementedException();
         }
 
         public string ExtractMetadata(Selector selector)
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }
