@@ -3,15 +3,16 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+#Ignored Project directories
+TestCaseData/
+Chromium/
+
 # User-specific files
 *.rsuser
 *.suo
 *.user
 *.userosscache
 *.sln.docstates
-
-#Configurations
-TestCaseData/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
