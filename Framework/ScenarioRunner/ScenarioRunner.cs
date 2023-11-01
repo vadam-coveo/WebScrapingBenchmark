@@ -40,6 +40,8 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
 
            // todo : see if things need some catching 
 
+           ConsoleLogger.Info($"    Evaluating url {url}");
+
            result.GoToUrlTiming = Evaluate(()=> WebScraper.GoToUrl(url));
 
            result.LoadTiming = Evaluate(() => WebScraper.Load());

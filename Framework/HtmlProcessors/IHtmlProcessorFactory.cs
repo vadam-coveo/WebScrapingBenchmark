@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebScrapingBenchmark.Framework.HtmlProcessors
 {
-    internal interface IHtmlProcessorFactory
+    public interface IHtmlProcessorFactory
     {
         IHtmlProcessor CreateAnglesharpHtmlProcessor(string html);
 

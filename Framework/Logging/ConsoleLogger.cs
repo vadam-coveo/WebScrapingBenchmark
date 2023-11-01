@@ -38,7 +38,6 @@
                     Console.ForegroundColor = color;
 
                     Console.WriteLine($"{indentation}{message}");
-                    Console.WriteLine($"\r");
 
                     Console.ForegroundColor = ConsoleColor.White;
                 }

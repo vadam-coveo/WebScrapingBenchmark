@@ -18,7 +18,7 @@ namespace WebScrapingBenchmark.WebScrapingStrategies
         public void Load()
         {
         }
-
+        
         public void ExcludeHtml(Selector selector)
         {
         }
