@@ -2,7 +2,7 @@
 {
     public interface IHtmlProcessorFactory
     {
-        IHtmlProcessor GetAngleSharpHtmlProcessor(string html);
+        IHtmlProcessor GetAngleSharpHtmlProcessor(string html, bool xpathSupport);
 
         IHtmlProcessor GetHtmlAgilityPackHtmlProcessor(string html);
 

@@ -12,7 +12,7 @@ namespace WebScrapingBenchmark.WebScrapingStrategies
 
         protected override IHtmlProcessor CreateHtmlProcessorInstance()
         {
-            return HtmlProcessorFactory.GetAngleSharpHtmlProcessor(HtmlBody);
+            return HtmlProcessorFactory.GetAngleSharpHtmlProcessor(HtmlBody, true);
         }
     }
 }

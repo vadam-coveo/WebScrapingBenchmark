@@ -1,6 +1,4 @@
-﻿using OpenQA.Selenium.Chrome;
-using System.Linq;
-using WebScrapingBenchmark.Framework.ChromeDriver;
+﻿using WebScrapingBenchmark.Framework.ChromeDriver;
 using WebScrapingBenchmark.Framework.Config;
 using WebScrapingBenchmark.Framework.HtmlProcessors;
 
@@ -87,7 +85,7 @@ namespace WebScrapingBenchmark.WebScrapingStrategies
                 HtmlProcessorFactory.Release(AnglesharpProcessor.Value);
             }
 
-            AnglesharpProcessor = new Lazy<IHtmlProcessor>(() => HtmlProcessorFactory.GetAngleSharpHtmlProcessor(_htmlBody));
+            AnglesharpProcessor = new Lazy<IHtmlProcessor>(() => HtmlProcessorFactory.GetAngleSharpHtmlProcessor(_htmlBody, false));
         }
 
         private void ResetAgilityPack()
