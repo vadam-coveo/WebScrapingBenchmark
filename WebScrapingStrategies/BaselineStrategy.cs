@@ -90,7 +90,7 @@ namespace WebScrapingBenchmark.WebScrapingStrategies
                 HtmlProcessorFactory.Release(AnglesharpProcessor.Value);
             }
 
-            AnglesharpProcessor = new Lazy<IHtmlProcessor>(() => HtmlProcessorFactory.CreateAnglesharpHtmlProcessor(_htmlBody));
+            AnglesharpProcessor = new Lazy<IHtmlProcessor>(() => HtmlProcessorFactory.AngleSharpHtmlProcessor(_htmlBody));
         }
 
         private void ResetAgilityPack()
@@ -100,7 +100,7 @@ namespace WebScrapingBenchmark.WebScrapingStrategies
                 HtmlProcessorFactory.Release(HtmlAgilityPackHtmlProcessor.Value);
             }
 
-            HtmlAgilityPackHtmlProcessor = new Lazy<IHtmlProcessor>(() => HtmlProcessorFactory.CreateHtmlAgilityPackHtmlProcessor(_htmlBody));
+            HtmlAgilityPackHtmlProcessor = new Lazy<IHtmlProcessor>(() => HtmlProcessorFactory.GetHtmlAgilityPackHtmlProcessor(_htmlBody));
         }
     }
 }

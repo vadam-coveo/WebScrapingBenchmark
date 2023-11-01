@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WebScrapingBenchmark.Framework.HtmlProcessors
+﻿namespace WebScrapingBenchmark.Framework.HtmlProcessors
 {
     public interface IHtmlProcessorFactory
     {
-        IHtmlProcessor CreateAnglesharpHtmlProcessor(string html);
+        IHtmlProcessor AngleSharpHtmlProcessor(string html);
 
-        IHtmlProcessor CreateHtmlAgilityPackHtmlProcessor(string html);
+        IHtmlProcessor GetHtmlAgilityPackHtmlProcessor(string html);
 
         void Release(IHtmlProcessor processor);
     }

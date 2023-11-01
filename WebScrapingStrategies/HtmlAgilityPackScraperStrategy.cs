@@ -23,7 +23,7 @@ namespace WebScrapingBenchmark.WebScrapingStrategies
         {
             return false;
         }
-
+        
         public IEnumerable<string> ExtractMetadata(Selector selector)
         {
             return Enumerable.Empty<string>();
