@@ -30,6 +30,7 @@ foreach (var runner in runners)
 }
 
 var benchmarkAggregator = container.Resolve<IBenchmarkAggregator>();
+benchmarkAggregator.ReportBenchmarks();
 
 // todo : interpret metrics
 
