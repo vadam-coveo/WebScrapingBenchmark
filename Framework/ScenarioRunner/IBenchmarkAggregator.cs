@@ -3,5 +3,7 @@
     public interface IBenchmarkAggregator
     {
         void AddBenchmark(Benchmark benchmark);
+
+        void ReportBenchmarks();
     }
 }
