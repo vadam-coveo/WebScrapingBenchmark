@@ -3,7 +3,6 @@ using System.Linq;
 using WebScrapingBenchmark.Framework.ChromeDriver;
 using WebScrapingBenchmark.Framework.Config;
 using WebScrapingBenchmark.Framework.HtmlProcessors;
-using WebScrapingBenchmark.Framework.Logging;
 
 namespace WebScrapingBenchmark.WebScrapingStrategies
 {
@@ -11,8 +10,6 @@ namespace WebScrapingBenchmark.WebScrapingStrategies
     {
         private IChromeDriverWrapper DriverWrapper { get; }
         private IHtmlProcessorFactory HtmlProcessorFactory { get; }
-
-        private ChromeDriver Driver => DriverWrapper.Driver;
 
         private string _htmlBody;
 
@@ -90,7 +87,7 @@ namespace WebScrapingBenchmark.WebScrapingStrategies
                 HtmlProcessorFactory.Release(AnglesharpProcessor.Value);
             }
 
-            AnglesharpProcessor = new Lazy<IHtmlProcessor>(() => HtmlProcessorFactory.AngleSharpHtmlProcessor(_htmlBody));
+            AnglesharpProcessor = new Lazy<IHtmlProcessor>(() => HtmlProcessorFactory.GetAngleSharpHtmlProcessor(_htmlBody));
         }
 
         private void ResetAgilityPack()

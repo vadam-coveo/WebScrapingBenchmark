@@ -1,33 +1,18 @@
-﻿using WebScrapingBenchmark.Framework.Config;
+﻿using WebScrapingBenchmark.Framework.ChromeDriver;
+using WebScrapingBenchmark.Framework.Config;
+using WebScrapingBenchmark.Framework.HtmlProcessors;
 
 namespace WebScrapingBenchmark.WebScrapingStrategies
 {
-    public class AnglesharpScraperStrategy : IWebScraperStrategy
+    public class AngleSharpScraperStrategy : HtmlProcessorBase
     {
-        public string ScraperName { get; set; }
-
-        public void GoToUrl(string url)
+        public AngleSharpScraperStrategy(IChromeDriverWrapper driverWrapper, IHtmlProcessorFactory htmlProcessorFactory) : base(driverWrapper, htmlProcessorFactory)
         {
         }
 
-        public void Load()
+        protected override IHtmlProcessor CreateHtmlProcessorInstance()
         {
-    
-        }
-
-        public bool ExcludeHtml(Selector selector)
-        {
-            return false;
-        }
-
-        public IEnumerable<string> ExtractMetadata(Selector selector)
-        {
-            return Enumerable.Empty<string>();
-        }
-
-        public string GetCleanedHtml()
-        {
-            return null;
+            return HtmlProcessorFactory.GetAngleSharpHtmlProcessor(HtmlBody);
         }
     }
 }
