@@ -45,22 +45,12 @@ namespace WebScrapingBenchmark.Framework.HtmlProcessors
 
         public bool Remove(Selector selector)
         {
-
-            var pathInfo = CssPath.Create(selector.Path);
-
-            var removed = false;
-            var selectedDomSet = _angleSharpDocument.QuerySelectorAll(pathInfo.Path);
-            if (selectedDomSet != null)
+            if (selector.Type == SelectorType.CSS)
             {
-                // For each dom element returned by the CSS expression, remove it from the document.
-                foreach (var domObject in selectedDomSet)
-                {
-                    domObject.Remove();
-                    removed = true;
-                }
+                return RemoveWithCss(selector);
             }
 
-            return removed;
+            throw new NotImplementedException("ADD XPATH");
         }
 
         private IEnumerable<string> ExtractWithCss(Selector selector)
@@ -92,6 +82,25 @@ namespace WebScrapingBenchmark.Framework.HtmlProcessors
             }
 
             return Enumerable.Empty<string>();
+        }
+
+        private bool RemoveWithCss(Selector selector)
+        {
+            var pathInfo = CssPath.Create(selector.Path);
+
+            var removed = false;
+            var selectedDomSet = _angleSharpDocument.QuerySelectorAll(pathInfo.Path);
+            if (selectedDomSet != null)
+            {
+                // For each dom element returned by the CSS expression, remove it from the document.
+                foreach (var domObject in selectedDomSet)
+                {
+                    domObject.Remove();
+                    removed = true;
+                }
+            }
+
+            return removed;
         }
 
         public void Dispose()

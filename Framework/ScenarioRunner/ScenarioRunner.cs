@@ -31,7 +31,8 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
 
             BenchmarkAggregator.AddBenchmark(benchmark);
 
-            ConsoleLogger.Info($"Done with scenario : {Scenario.ScenarioName} with scraper {WebScraper.GetType().Name} ");
+            ConsoleLogger.Warn($"-------------------------------Done with scenario : {Scenario.ScenarioName} with scraper {WebScraper.GetType().Name}------------------------------------");
+            ConsoleLogger.Debug("\r\r");
         }
 
         private ScrapingBenchmarkResult Evaluate(string url)
