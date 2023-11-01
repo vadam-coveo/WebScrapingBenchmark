@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using AngleSharp.Dom;
+using HtmlAgilityPack;
 
 namespace WebScrapingBenchmark.Framework.Scrapers
 {
@@ -11,9 +13,42 @@ namespace WebScrapingBenchmark.Framework.Scrapers
     {
 
         /// <summary>
+        /// Extract the value of the HTML node if it is an attribute or text node, or the node's HTML
+        /// content if it is an element.
+        /// </summary>
+        public static string GetValueOrElement(IElement htmlNode,
+            CssPath pathInfo)
+        {
+            string value;
+            if (htmlNode.NodeType == NodeType.Text)
+                value = htmlNode.NodeValue;
+            else if (pathInfo.IsText)
+                value = htmlNode.TextContent;
+            else if (pathInfo.IsAttribute)
+                value = htmlNode.GetAttribute(pathInfo.AttributeName);
+            else
+                value = htmlNode.OuterHtml;
+
+            value = CleanHtml(value);
+
+            return value;
+        }
+
+        /// <summary>
+        /// Removes all trailing whitespaces and de-entitize an HTML string.
+        /// </summary>
+        /// <param name="html">The HTML string.</param>
+        /// <returns>A cleaned HTML string.</returns>
+        public static string CleanHtml(string html)
+        {
+            return !string.IsNullOrEmpty(html) ? HtmlEntity.DeEntitize(html).Trim() : html;
+        }
+
+
+        /// <summary>
         /// Provides an object representation of a CSS selector path.
         /// </summary>
-        private sealed class CssPath
+        internal sealed class CssPath
         {
             private const string GROUP_NAME_PATH = "path";
             private const string GROUP_NAME_ATTRIBUTE = "attributeName";
