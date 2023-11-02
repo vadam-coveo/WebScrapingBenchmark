@@ -1,5 +1,4 @@
-﻿using WebScrapingBenchmark.Framework.Config;
-using WebScrapingBenchmark.Framework.Logging;
+﻿using WebScrapingBenchmark.Framework.Logging;
 using WebScrapingBenchmark.Framework.UrlScrapingResults;
 
 namespace WebScrapingBenchmark.Framework.ScrapingResultComparing

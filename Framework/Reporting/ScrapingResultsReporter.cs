@@ -48,11 +48,16 @@ namespace WebScrapingBenchmark.Framework.Reporting
                 builder.AppendLine($"\t{FormatHelper.StringifyDuration(scenarioGroup.Select(result => result.AverageMetadataExtraction.Value).Average())}\tAverage MetadataExtraction");
                 builder.AppendLine($"\t{FormatHelper.StringifyDuration(scenarioGroup.Select(result => result.AverageContentExclusion.Value).Average())}\tAverage ContentExclusion");
 
-                //builder.AppendLine($"\t{FormatHelper.StringifyDuration(scenarioGroup.Select(result => result.TotalScrapingTime.Value).Average())}\tAverage TotalScrapingTime");
+                builder.AppendLine($"\t{FormatHelper.StringifyDuration(scenarioGroup.Select(result => result.TotalScrapingTime.Value).Average())}\tAverage TotalScrapingTime");
 
                 builder.AppendLine($"\t{OutputBest(scenarioGroup, result => result.GoToUrlTiming)}\t\tFastest GoToUrl");
                 builder.AppendLine($"\t{OutputBest(scenarioGroup, result => result.LoadTiming)}\t\tFastest Load");
                 builder.AppendLine($"\t{OutputBest(scenarioGroup, result => result.GetHtmlResultTiming)}\t\tFastest GetHtmlResult");
+
+                builder.AppendLine($"\t{OutputBest(scenarioGroup, result => result.TotalMetadataExtractionTime.Value)}\tFastest MetadataExtraction");
+                builder.AppendLine($"\t{OutputBest(scenarioGroup, result => result.TotalContentExclusionTime.Value)}\tFastest ContentExclusion");
+
+                builder.AppendLine($"\t{OutputBest(scenarioGroup, result => result.TotalScrapingTime.Value)}\tFastest TotalScrapingTime");
 
                 Console.WriteLine(builder);
             }
@@ -60,8 +65,8 @@ namespace WebScrapingBenchmark.Framework.Reporting
 
         private static string OutputBest(IEnumerable<ScrapingTimingResults> group, Func<ScrapingTimingResults, TimeSpan> criteria)
         {
-            var fastest = group.OrderBy(criteria).First(result => criteria.Invoke(result) != TimeSpan.Zero);
-            return $"{FormatHelper.StringifyDuration(criteria.Invoke(fastest))} <= {fastest.ScraperName}";
+            var fastest = group.OrderBy(criteria).FirstOrDefault(result => criteria.Invoke(result) != TimeSpan.Zero);
+            return fastest != null ? $"{FormatHelper.StringifyDuration(criteria.Invoke(fastest))} <= {fastest.ScraperName}" : "None";
         }
     }
 }

@@ -35,13 +35,13 @@ public class ScrapingTimingResults : BaseUrlScrapingResult
     public Lazy<TimeSpan> SlowestContentExclusion => GetLazy(ContentExclusionTiming, Eval.Max);
 
     [TypeConverter(typeof(LazyTimespanConverter))]
-    public Lazy<TimeSpan> TotalMetadataExtraction => GetLazy(MetadataExtractionTiming, Eval.Sum);
+    public Lazy<TimeSpan> TotalMetadataExtractionTime => GetLazy(MetadataExtractionTiming, Eval.Sum);
 
     [TypeConverter(typeof(LazyTimespanConverter))]
     public Lazy<TimeSpan> TotalContentExclusionTime => GetLazy(ContentExclusionTiming, Eval.Sum);
 
     [TypeConverter(typeof(LazyTimespanConverter))]
-    public Lazy<TimeSpan> TotalScrapingTime => new (() => LoadTiming + TotalMetadataExtraction.Value + TotalContentExclusionTime.Value + GetHtmlResultTiming);
+    public Lazy<TimeSpan> TotalScrapingTime => new (() => LoadTiming + TotalMetadataExtractionTime.Value + TotalContentExclusionTime.Value + GetHtmlResultTiming);
 
     public ScrapingTimingResults(string url, string scenarioName, string scraperName) : base(url, scenarioName, scraperName)
     {
