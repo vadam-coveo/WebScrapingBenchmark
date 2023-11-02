@@ -6,9 +6,14 @@ namespace WebScrapingBenchmark.Framework.UrlScrapingResults;
 
 public class ScrapingTimingResults : BaseUrlScrapingResult
 {
-    public TimeSpan GoToUrlTiming;
-    public TimeSpan LoadTiming;
-    public TimeSpan GetHtmlResultTiming;
+    [TypeConverter(typeof(TimeSpanConverter))]
+    public TimeSpan GoToUrlTiming { get; set; }
+
+    [TypeConverter(typeof(TimeSpanConverter))]
+    public TimeSpan LoadTiming { get; set; }
+
+    [TypeConverter(typeof(TimeSpanConverter))]
+    public TimeSpan GetHtmlResultTiming { get; set; }
 
     [Ignore]
     public List<ElementTiming> MetadataExtractionTiming = new();
@@ -16,31 +21,31 @@ public class ScrapingTimingResults : BaseUrlScrapingResult
     [Ignore]
     public List<ElementTiming> ContentExclusionTiming = new();
 
-    [TypeConverter(typeof(LazyTimespanConverter))]
+    [TypeConverter(typeof(LazyTimeSpanConverter))]
     public Lazy<TimeSpan> AverageMetadataExtraction => GetLazy(MetadataExtractionTiming, Eval.Average);
 
-    [TypeConverter(typeof(LazyTimespanConverter))]
+    [TypeConverter(typeof(LazyTimeSpanConverter))]
     public Lazy<TimeSpan> AverageContentExclusion => GetLazy(ContentExclusionTiming, Eval.Average);
 
-    [TypeConverter(typeof(LazyTimespanConverter))]
+    [TypeConverter(typeof(LazyTimeSpanConverter))]
     public Lazy<TimeSpan> FastestMetadataExtraction => GetLazy(MetadataExtractionTiming, Eval.Min);
 
-    [TypeConverter(typeof(LazyTimespanConverter))]
+    [TypeConverter(typeof(LazyTimeSpanConverter))]
     public Lazy<TimeSpan> FastestContentExclusion => GetLazy(ContentExclusionTiming, Eval.Min);
 
-    [TypeConverter(typeof(LazyTimespanConverter))]
+    [TypeConverter(typeof(LazyTimeSpanConverter))]
     public Lazy<TimeSpan> SlowestMetadataExtraction => GetLazy(MetadataExtractionTiming, Eval.Max);
 
-    [TypeConverter(typeof(LazyTimespanConverter))]
+    [TypeConverter(typeof(LazyTimeSpanConverter))]
     public Lazy<TimeSpan> SlowestContentExclusion => GetLazy(ContentExclusionTiming, Eval.Max);
 
-    [TypeConverter(typeof(LazyTimespanConverter))]
+    [TypeConverter(typeof(LazyTimeSpanConverter))]
     public Lazy<TimeSpan> TotalMetadataExtractionTime => GetLazy(MetadataExtractionTiming, Eval.Sum);
 
-    [TypeConverter(typeof(LazyTimespanConverter))]
+    [TypeConverter(typeof(LazyTimeSpanConverter))]
     public Lazy<TimeSpan> TotalContentExclusionTime => GetLazy(ContentExclusionTiming, Eval.Sum);
 
-    [TypeConverter(typeof(LazyTimespanConverter))]
+    [TypeConverter(typeof(LazyTimeSpanConverter))]
     public Lazy<TimeSpan> TotalScrapingTime => new (() => LoadTiming + TotalMetadataExtractionTime.Value + TotalContentExclusionTime.Value + GetHtmlResultTiming);
 
     public ScrapingTimingResults(string url, string scenarioName, string scraperName) : base(url, scenarioName, scraperName)

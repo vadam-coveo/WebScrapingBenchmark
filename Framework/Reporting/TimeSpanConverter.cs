@@ -5,12 +5,13 @@ using WebScrapingBenchmark.Framework.Logging;
 
 namespace WebScrapingBenchmark.Framework.Reporting
 {
-    public class LazyTimespanConverter : DefaultTypeConverter
+    public class TimeSpanConverter : DefaultTypeConverter
     {
         public override string? ConvertToString(object? value, IWriterRow row, MemberMapData memberMapData)
         {
-            var casted = value as Lazy<TimeSpan>;
-            return FormatHelper.FormatDurationForExcel(casted?.Value ?? TimeSpan.Zero);
+            if (value == null) return null;
+            
+            return FormatHelper.FormatDurationForExcel((TimeSpan)value);
         }
     }
 }
