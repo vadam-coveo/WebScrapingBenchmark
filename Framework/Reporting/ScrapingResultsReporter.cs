@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Text;
 using CsvHelper;
 using Humanizer;
+using WebScrapingBenchmark.Framework.Logging;
 using WebScrapingBenchmark.Framework.ScenarioRunner;
 using WebScrapingBenchmark.Framework.ScrapingResultComparing;
 using WebScrapingBenchmark.Framework.UrlScrapingResults;
@@ -38,20 +39,20 @@ namespace WebScrapingBenchmark.Framework.Reporting
             foreach (var scenarioGroup in resultsGroupByScenarioIdentifier)
             {
                 var builder = new StringBuilder();
-                builder.AppendLine($"Scenario Identifier: {scenarioGroup.Key}");
+                builder.AppendLine($"{scenarioGroup.Key}");
 
-                builder.AppendLine($"Average GoToUrl: {scenarioGroup.Select(result => result.GoToUrlTiming).Average().Humanize(3)}");
-                builder.AppendLine($"Average Load: {scenarioGroup.Select(result => result.LoadTiming).Average().Humanize(3)}");
-                builder.AppendLine($"Average GetHtmlResult: {scenarioGroup.Select(result => result.GetHtmlResultTiming).Average().Humanize(3)}");
+                builder.AppendLine($"\t{FormatHelper.StringifyDuration(scenarioGroup.Select(result => result.GoToUrlTiming).Average())}\tAverage GoToUrl");
+                builder.AppendLine($"\t{FormatHelper.StringifyDuration(scenarioGroup.Select(result => result.LoadTiming).Average())}\tAverage Load");
+                builder.AppendLine($"\t{FormatHelper.StringifyDuration(scenarioGroup.Select(result => result.GetHtmlResultTiming).Average())}\tAverage GetHtmlResult");
 
-                builder.AppendLine($"Average MetadataExtraction: {scenarioGroup.Select(result => result.AverageMetadataExtraction.Value).Average().Humanize(3)}");
-                builder.AppendLine($"Average ContentExclusion: {scenarioGroup.Select(result => result.AverageContentExclusion.Value).Average().Humanize(3)}");
+                builder.AppendLine($"\t{FormatHelper.StringifyDuration(scenarioGroup.Select(result => result.AverageMetadataExtraction.Value).Average())}\tAverage MetadataExtraction");
+                builder.AppendLine($"\t{FormatHelper.StringifyDuration(scenarioGroup.Select(result => result.AverageContentExclusion.Value).Average())}\tAverage ContentExclusion");
 
-                //builder.AppendLine($"Average TotalScrapingTime: {scenarioGroup.Select(result => result.TotalScrapingTime.Value).Average().Humanize(3)}");
-                
-                builder.AppendLine($"Fastest GoToUrl: {OutputBest(scenarioGroup, result => result.GoToUrlTiming)}");
-                builder.AppendLine($"Fastest Load: {OutputBest(scenarioGroup, result => result.LoadTiming)}");
-                builder.AppendLine($"Fastest GetHtmlResult: {OutputBest(scenarioGroup, result => result.GetHtmlResultTiming)}");
+                //builder.AppendLine($"\t{FormatHelper.StringifyDuration(scenarioGroup.Select(result => result.TotalScrapingTime.Value).Average())}\tAverage TotalScrapingTime");
+
+                builder.AppendLine($"\t{OutputBest(scenarioGroup, result => result.GoToUrlTiming)}\tFastest GoToUrl");
+                builder.AppendLine($"\t{OutputBest(scenarioGroup, result => result.LoadTiming)}\tFastest Load");
+                builder.AppendLine($"\t{OutputBest(scenarioGroup, result => result.GetHtmlResultTiming)}\tFastest GetHtmlResult");
 
                 Console.WriteLine(builder);
             }
@@ -59,8 +60,8 @@ namespace WebScrapingBenchmark.Framework.Reporting
 
         private static string OutputBest(IEnumerable<ScrapingTimingResults> group, Func<ScrapingTimingResults, TimeSpan> criteria)
         {
-            var fastest = group.OrderBy(criteria).First();
-            return $"{fastest.ScraperName} => {fastest.GoToUrlTiming.Humanize(3)}";
+            var fastest = group.OrderBy(criteria).First(result => criteria.Invoke(result) != TimeSpan.Zero);
+            return $"{FormatHelper.StringifyDuration(fastest.GoToUrlTiming)} <= {fastest.ScraperName}";
         }
     }
 }
