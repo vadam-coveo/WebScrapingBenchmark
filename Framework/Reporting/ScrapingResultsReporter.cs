@@ -8,6 +8,7 @@ using Humanizer;
 using WebScrapingBenchmark.Framework.Logging;
 using WebScrapingBenchmark.Framework.ScenarioRunner;
 using WebScrapingBenchmark.Framework.UrlScrapingResults;
+using WebScrapingBenchmark.WebScrapingStrategies;
 
 namespace WebScrapingBenchmark.Framework.Reporting
 {
@@ -70,6 +71,8 @@ namespace WebScrapingBenchmark.Framework.Reporting
                 reportingEntries.Add(CreateConsoleReportingEntry("TotalScrapingTime", totalScrapingTimeAverage, totalScrapingTimeBest, totalScrapingTimeWorst, result => result.TotalScrapingTime.Value));
 
                 ConsoleLogger.Warn(scenarioGroup.Key);
+                ConsoleLogger.Info($"Initial HTML in bytes: {scenarioGroup.ElementAt(0).InitialHtmlBytes.Bytes().Humanize()}");
+                ConsoleLogger.Info($"Final HTML in bytes:   {scenarioGroup.First(result => result.ScraperName == nameof(BaselineStrategy)).FinalHtmlBytes.Bytes().Humanize()}");
                 ConsoleLogger.WriteLine(Formatter.Format(reportingEntries));
             }
         }
