@@ -15,7 +15,7 @@ namespace WebScrapingBenchmark.Framework.Logging
         {
             var milis = Convert.ToDecimal(duration.Ticks) / (decimal)10000;
 
-            return milis.ToString("n", _numberFormat.Value).PadLeft(20) + " ms".PadLeft(8);
+            return (milis.ToString("n", _numberFormat.Value) + " ms").PadLeft(30);
         }
     }
 }
