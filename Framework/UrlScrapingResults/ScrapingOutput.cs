@@ -5,7 +5,7 @@ namespace WebScrapingBenchmark.Framework.UrlScrapingResults
     public class ScrapingOutput : ScrapingTimingResults, IEquatable<ScrapingOutput>
     {
         public readonly Dictionary<string, IEnumerable<string>> Metadata = new();
-        public readonly Dictionary<string, bool> ContentExclusions = new();
+        public readonly Dictionary<string, long> ContentExclusions = new();
         public string FinalHtmlBody;
         public long InitialHtmlBytes { get; private set; }
         public long FinalHtmlBytes { get; private set; }
@@ -20,9 +20,9 @@ namespace WebScrapingBenchmark.Framework.UrlScrapingResults
             Metadata.Add(selectorPath, result);
         }
 
-        public void RegisterContentExclusion(string selectorPath, bool excludedContent)
+        public void RegisterContentExclusion(string selectorPath, long excludedContentbytes)
         {
-            ContentExclusions.Add(selectorPath, excludedContent);
+            ContentExclusions.Add(selectorPath, excludedContentbytes);
         }
 
         public void RegisterFinalBody(string htmlBody)
