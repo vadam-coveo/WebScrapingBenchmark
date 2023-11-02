@@ -29,9 +29,9 @@ namespace WebScrapingBenchmark.Framework.Logging
             return Encoding.ASCII.GetByteCount(input);
         }
 
-        public static string GetFormattedByes(long input)
+        public static string GetFormattedByes(long input, int padding = 0)
         {
-            return input.Bytes().Humanize().PadLeft(20);
+            return input.Bytes().Humanize().PadLeft(padding);
         }
     }
 }

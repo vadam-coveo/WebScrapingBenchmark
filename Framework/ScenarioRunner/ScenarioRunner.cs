@@ -56,7 +56,7 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
            EvaluateGoingToUrl(results);
 
            results.Timing.LoadTiming = Evaluate(() => WebScraper.Load());
-           ConsoleLogger.Debug($"\t{FormatHelper.StringifyDuration(results.Timing.LoadTiming)} Loading libraries");
+           ConsoleLogger.Debug($"\t{FormatHelper.StringifyDuration(results.Timing.LoadTiming)} \t Loading libraries");
 
            ConsoleLogger.Debug("\r\r");
 
@@ -64,7 +64,10 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
 
            EvaluateContentExclusions(results);
 
+           ConsoleLogger.Debug("\r");
            EvaluateFinalHtmlBody(results);
+
+           ConsoleLogger.Debug("\r\r");
 
            return results;
         }
@@ -77,7 +80,7 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
             result.Timing.GoToUrlTiming = Evaluate(() => html = WebScraper.GoToUrl(url));
             result.ScrapingOutput.RegisterInitialBody(html);
 
-            ConsoleLogger.Info($"\t{FormatHelper.StringifyDuration(result.Timing.GoToUrlTiming)}  {FormatHelper.GetFormattedByes(result.ScrapingOutput.InitialHtmlBodySize)} - Browsed to url {url}");
+            ConsoleLogger.Info($"\t{FormatHelper.StringifyDuration(result.Timing.GoToUrlTiming)}  {FormatHelper.GetFormattedByes(result.ScrapingOutput.InitialHtmlBodySize, 16)} - Browsed to url {url}");
         }
 
         private void EvaluateContentExclusions(UrlScrapingResults result)
@@ -141,7 +144,7 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
 
             result.ScrapingOutput.RegisterFinalBody(body);
 
-            ConsoleLogger.Info($"\t{FormatHelper.StringifyDuration(result.Timing.TotalScrapingTime.Value)} \t Scraping time,  {FormatHelper.GetFormattedByes(result.ScrapingOutput.BodySizeDiff)} removed from intial body");
+            ConsoleLogger.Info($"\t{FormatHelper.StringifyDuration(result.Timing.TotalScrapingTime.Value)} \t Scraping time {FormatHelper.GetFormattedByes(result.ScrapingOutput.BodySizeDiff, 20)} removed from intial body");
         }
 
         private TimeSpan Evaluate(Action action)
