@@ -8,6 +8,8 @@ namespace WebScrapingBenchmark.Framework.UrlScrapingResults
         public List<ContentExclusionKpi> ExclusionKpi => _exclusionKpi ??= GetExclusionsKpi();
         private List<ContentExclusionKpi>? _exclusionKpi;
 
+        public long ExcludedBytesPerTick => ExcludedBytes / TotalContentExclusionTime.Value.Ticks;
+
         public ScrapingMetrics(string url, string scenarioName, string scraperName) : base(url, scenarioName, scraperName)
         {
         }
