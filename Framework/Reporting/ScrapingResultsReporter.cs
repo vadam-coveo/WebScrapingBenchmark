@@ -50,9 +50,9 @@ namespace WebScrapingBenchmark.Framework.Reporting
 
                 //builder.AppendLine($"\t{FormatHelper.StringifyDuration(scenarioGroup.Select(result => result.TotalScrapingTime.Value).Average())}\tAverage TotalScrapingTime");
 
-                builder.AppendLine($"\t{OutputBest(scenarioGroup, result => result.GoToUrlTiming)}\tFastest GoToUrl");
-                builder.AppendLine($"\t{OutputBest(scenarioGroup, result => result.LoadTiming)}\tFastest Load");
-                builder.AppendLine($"\t{OutputBest(scenarioGroup, result => result.GetHtmlResultTiming)}\tFastest GetHtmlResult");
+                builder.AppendLine($"\t{OutputBest(scenarioGroup, result => result.GoToUrlTiming)}\t\tFastest GoToUrl");
+                builder.AppendLine($"\t{OutputBest(scenarioGroup, result => result.LoadTiming)}\t\tFastest Load");
+                builder.AppendLine($"\t{OutputBest(scenarioGroup, result => result.GetHtmlResultTiming)}\t\tFastest GetHtmlResult");
 
                 Console.WriteLine(builder);
             }
@@ -61,7 +61,7 @@ namespace WebScrapingBenchmark.Framework.Reporting
         private static string OutputBest(IEnumerable<ScrapingTimingResults> group, Func<ScrapingTimingResults, TimeSpan> criteria)
         {
             var fastest = group.OrderBy(criteria).First(result => criteria.Invoke(result) != TimeSpan.Zero);
-            return $"{FormatHelper.StringifyDuration(fastest.GoToUrlTiming)} <= {fastest.ScraperName}";
+            return $"{FormatHelper.StringifyDuration(criteria.Invoke(fastest))} <= {fastest.ScraperName}";
         }
     }
 }
