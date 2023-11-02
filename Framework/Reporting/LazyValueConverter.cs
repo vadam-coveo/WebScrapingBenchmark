@@ -18,7 +18,7 @@ namespace WebScrapingBenchmark.Framework.Reporting
         public override string? ConvertToString(object? value, IWriterRow row, MemberMapData memberMapData)
         {
             var casted = value as Lazy<TimeSpan>;
-            return FormatHelper.FormatDuration(casted?.Value ?? TimeSpan.Zero);
+            return FormatHelper.FormatDurationForExcel(casted?.Value ?? TimeSpan.Zero);
         }
     }
 }

@@ -14,6 +14,13 @@ namespace WebScrapingBenchmark.Framework.Logging
             NumberDecimalDigits = 4
         });
 
+        public static Lazy<NumberFormatInfo> _excelNumberFormat = new(() => new NumberFormatInfo
+        {
+            NumberGroupSeparator = "",
+            NumberDecimalSeparator = ".",
+            NumberDecimalDigits = 4
+        });
+
         public static string StringifyDuration(TimeSpan duration)
         {
             var milis = Convert.ToDecimal(duration.Ticks) / (decimal)10000;
@@ -22,6 +29,12 @@ namespace WebScrapingBenchmark.Framework.Logging
         }
 
         public static string FormatDuration(TimeSpan duration)
+        {
+            var milis = Convert.ToDecimal(duration.Ticks) / (decimal)10000;
+            return milis.ToString("n", _numberFormat.Value);
+        }
+
+        public static string FormatDurationForExcel(TimeSpan duration)
         {
             var milis = Convert.ToDecimal(duration.Ticks) / (decimal)10000;
             return milis.ToString("n", _numberFormat.Value);

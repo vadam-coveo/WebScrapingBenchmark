@@ -16,31 +16,67 @@ public class ScrapingTimingResults : BaseUrlScrapingResult
     [Ignore]
     public List<ElementTiming> ContentExclusionTiming = new();
 
-    [TypeConverter(typeof(LazyValueConverter<TimeSpan>))]
-    public Lazy<TimeSpan> AverageMetadataExtraction => new Lazy<TimeSpan>(() => MetadataExtractionTiming.Select(timing => timing.Duration).Average());
-    [TypeConverter(typeof(LazyValueConverter<TimeSpan>))]
-    public Lazy<TimeSpan> AverageContentExclusion => new Lazy<TimeSpan>(() => ContentExclusionTiming.Select(timing => timing.Duration).Average());
+    [TypeConverter(typeof(LazyTimespanConverter))]
+    public Lazy<TimeSpan> AverageMetadataExtraction => GetLazy(MetadataExtractionTiming, Eval.Average);
 
-    /*[TypeConverter(typeof(LazyValueConverter<TimeSpan>))]
-    public Lazy<TimeSpan> FastestMetadataExtraction => new Lazy<TimeSpan>(() => MetadataExtractionTiming.Select(timing => timing.Duration).Min());
-    [TypeConverter(typeof(LazyValueConverter<TimeSpan>))]
-    public Lazy<TimeSpan> FastestContentExclusion => new Lazy<TimeSpan>(() => ContentExclusionTiming.Select(timing => timing.Duration).Min());
+    [TypeConverter(typeof(LazyTimespanConverter))]
+    public Lazy<TimeSpan> AverageContentExclusion => GetLazy(ContentExclusionTiming, Eval.Average);
 
-    [TypeConverter(typeof(LazyValueConverter<TimeSpan>))]
-    public Lazy<TimeSpan> SlowestMetadataExtraction => new Lazy<TimeSpan>(() => MetadataExtractionTiming.Select(timing => timing.Duration).Max());
-    [TypeConverter(typeof(LazyValueConverter<TimeSpan>))]
-    public Lazy<TimeSpan> SlowestContentExclusion => new Lazy<TimeSpan>(() => ContentExclusionTiming.Select(timing => timing.Duration).Max());*/
+    [TypeConverter(typeof(LazyTimespanConverter))]
+    public Lazy<TimeSpan> FastestMetadataExtraction => GetLazy(MetadataExtractionTiming, Eval.Min);
 
-    [TypeConverter(typeof(LazyValueConverter<TimeSpan>))]
-    public Lazy<TimeSpan> TotalMetadataExtraction => new (() => TimeSpan.FromMilliseconds(MetadataExtractionTiming.Sum(timing => timing.Duration.TotalMilliseconds)));
+    [TypeConverter(typeof(LazyTimespanConverter))]
+    public Lazy<TimeSpan> FastestContentExclusion => GetLazy(ContentExclusionTiming, Eval.Min);
 
-    [TypeConverter(typeof(LazyValueConverter<TimeSpan>))]
-    public Lazy<TimeSpan> TotalContentExclusionTime => new (() => TimeSpan.FromMilliseconds(ContentExclusionTiming.Sum(timing => timing.Duration.TotalMilliseconds)));
+    [TypeConverter(typeof(LazyTimespanConverter))]
+    public Lazy<TimeSpan> SlowestMetadataExtraction => GetLazy(MetadataExtractionTiming, Eval.Max);
 
-    [TypeConverter(typeof(LazyValueConverter<TimeSpan>))]
+    [TypeConverter(typeof(LazyTimespanConverter))]
+    public Lazy<TimeSpan> SlowestContentExclusion => GetLazy(ContentExclusionTiming, Eval.Max);
+
+    [TypeConverter(typeof(LazyTimespanConverter))]
+    public Lazy<TimeSpan> TotalMetadataExtraction => GetLazy(MetadataExtractionTiming, Eval.Sum);
+
+    [TypeConverter(typeof(LazyTimespanConverter))]
+    public Lazy<TimeSpan> TotalContentExclusionTime => GetLazy(ContentExclusionTiming, Eval.Sum);
+
+    [TypeConverter(typeof(LazyTimespanConverter))]
     public Lazy<TimeSpan> TotalScrapingTime => new (() => LoadTiming + TotalMetadataExtraction.Value + TotalContentExclusionTime.Value + GetHtmlResultTiming);
 
     public ScrapingTimingResults(string url, string scenarioName, string scraperName) : base(url, scenarioName, scraperName)
     {
+    }
+
+    private enum Eval
+    {
+        Min,
+        Max,
+        Average,
+        Sum
+    }
+    private Lazy<TimeSpan> GetLazy(IEnumerable<ElementTiming> list, Eval eval)
+    {
+        if (!list?.Any() ?? true)
+        {
+            return new Lazy<TimeSpan>(() => TimeSpan.Zero);
+        }
+
+        switch (eval)
+        {
+            case Eval.Min:
+                return new Lazy<TimeSpan>(() => list.Select(timing => timing.Duration).Min());
+                break;
+            case Eval.Max:
+                return new Lazy<TimeSpan>(() => list.Select(timing => timing.Duration).Max());
+                break;
+            case Eval.Average:
+                return new Lazy<TimeSpan>(() => list.Select(timing => timing.Duration).Average());
+                break;
+            case Eval.Sum:
+                return new Lazy<TimeSpan>(() => TimeSpan.FromTicks(list.Select(timing => timing.Duration).Sum(x=> x.Ticks)));
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(eval), eval, null);
+        }
     }
 }
