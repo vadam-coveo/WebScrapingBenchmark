@@ -1,16 +1,15 @@
 ﻿using WebScrapingBenchmark.Framework.Logging;
-using WebScrapingBenchmark.Framework.UrlScrapingResults;
 
-namespace WebScrapingBenchmark.Framework.ScrapingResultComparing
+namespace WebScrapingBenchmark.Framework.UrlScrapingResults
 {
     public class ScrapingOutput : ScrapingTimingResults, IEquatable<ScrapingOutput>
     {
         public readonly Dictionary<string, IEnumerable<string>> Metadata = new();
         public readonly Dictionary<string, bool> ContentExclusions = new();
         public string FinalHtmlBody;
-        public long InitialHtmlBodySize { get; private set; }
-        public long FinalHtmlBodySize { get; private set; }
-        public long BodySizeDiff { get; private set; }
+        public long InitialHtmlBytes { get; private set; }
+        public long FinalHtmlBytes { get; private set; }
+        public long ExcludedBytes { get; private set; }
         
         public ScrapingOutput(string url, string scenarioName, string scraperName) :base(url, scenarioName, scraperName)
         {
@@ -29,14 +28,14 @@ namespace WebScrapingBenchmark.Framework.ScrapingResultComparing
         public void RegisterFinalBody(string htmlBody)
         {
             FinalHtmlBody = htmlBody;
-            FinalHtmlBodySize = FormatHelper.GetBytes(htmlBody);
+            FinalHtmlBytes = FormatHelper.GetBytes(htmlBody);
 
-            BodySizeDiff = InitialHtmlBodySize - FinalHtmlBodySize;
+            ExcludedBytes = InitialHtmlBytes - FinalHtmlBytes;
         }
 
         public void RegisterInitialBody(string htmlBody)
         {
-            InitialHtmlBodySize = FormatHelper.GetBytes(htmlBody);
+            InitialHtmlBytes = FormatHelper.GetBytes(htmlBody);
         }
 
         public bool Equals(ScrapingOutput? other)

@@ -3,7 +3,7 @@ using AngleSharp.Dom;
 using HtmlAgilityPack;
 using WebScrapingBenchmark.Framework.Config;
 
-namespace WebScrapingBenchmark.Framework.Scrapers
+namespace WebScrapingBenchmark.Framework.HtmlProcessors
 {
     internal class ProcessorHelper
     {

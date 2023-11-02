@@ -1,7 +1,6 @@
 ﻿using AngleSharp;
 using WebScrapingBenchmark.Framework.Config;
 using AngleSharp.Dom;
-using WebScrapingBenchmark.Framework.Scrapers;
 using ConsoleLogger = WebScrapingBenchmark.Framework.Logging.ConsoleLogger;
 
 namespace WebScrapingBenchmark.Framework.HtmlProcessors

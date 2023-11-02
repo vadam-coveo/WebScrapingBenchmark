@@ -51,14 +51,14 @@ public class ScrapingTimingResults : BaseUrlScrapingResult
     {
     }
 
-    private enum Eval
+    protected enum Eval
     {
         Min,
         Max,
         Average,
         Sum
     }
-    private Lazy<TimeSpan> GetLazy(IEnumerable<ElementTiming> list, Eval eval)
+    protected Lazy<TimeSpan> GetLazy(IEnumerable<ElementTiming> list, Eval eval)
     {
         if (!list?.Any() ?? true)
         {

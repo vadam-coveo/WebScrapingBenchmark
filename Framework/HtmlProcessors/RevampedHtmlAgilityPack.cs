@@ -1,7 +1,6 @@
 ﻿using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
 using WebScrapingBenchmark.Framework.Config;
-using WebScrapingBenchmark.Framework.Scrapers;
 
 namespace WebScrapingBenchmark.Framework.HtmlProcessors
 {
