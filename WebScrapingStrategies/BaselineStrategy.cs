@@ -95,7 +95,7 @@ namespace WebScrapingBenchmark.WebScrapingStrategies
                 HtmlProcessorFactory.Release(HtmlAgilityPackHtmlProcessor.Value);
             }
 
-            HtmlAgilityPackHtmlProcessor = new Lazy<IHtmlProcessor>(() => HtmlProcessorFactory.GetHtmlAgilityPackHtmlProcessor(_htmlBody));
+            HtmlAgilityPackHtmlProcessor = new Lazy<IHtmlProcessor>(() => HtmlProcessorFactory.GetHtmlAgilityPackHtmlProcessor(_htmlBody, false));
         }
     }
 }

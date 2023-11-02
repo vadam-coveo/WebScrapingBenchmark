@@ -1,5 +1,7 @@
 ﻿using WebScrapingBenchmark.Framework.Config;
 using WebScrapingBenchmark.Framework.Logging;
+using WebScrapingBenchmark.Framework.ScrapingResultComparing;
+using WebScrapingBenchmark.Framework.UrlScrapingResults;
 using WebScrapingBenchmark.WebScrapingStrategies;
 
 namespace WebScrapingBenchmark.Framework.ScenarioRunner
@@ -8,67 +10,81 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
     {
         public IWebScraperStrategy WebScraper { get; }
         public ConfigurationScenario Scenario { get; }
-        public IBenchmarkAggregator BenchmarkAggregator { get; }
-
-        public ScenarioRunner(IWebScraperStrategy webScraper, ConfigurationScenario scenario, IBenchmarkAggregator benchmarkAggregator)
+        private IBenchmarkAggregator BenchmarkAggregator { get; }
+        
+        private IAggregator<ScrapingOutput> ScrapingOutputAggregator { get; }
+        private IAggregator<ScrapingTimingResults> ScrapingTimingAggregator { get; }
+        public ScenarioRunner(IWebScraperStrategy webScraper, ConfigurationScenario scenario, IAggregator<ScrapingOutput> scrapingOutputAggregator, IAggregator<ScrapingTimingResults> scrapingTimingAggregator, IBenchmarkAggregator benchmarkAggregator)
         {
             WebScraper = webScraper;
             Scenario = scenario;
             BenchmarkAggregator = benchmarkAggregator;
+            ScrapingOutputAggregator = scrapingOutputAggregator;
+            ScrapingTimingAggregator = scrapingTimingAggregator;
         }
 
         public void RunScenario()
         {
-            ConsoleLogger.Info($"Running scenario : {Scenario.ScenarioName} with scraper {WebScraper.GetType().Name} ");
+            ConsoleLogger.Debug("\r\r");
+            ConsoleLogger.Info($"-------------------------------------Running scenario : {Scenario.ScenarioName} with scraper {WebScraper.GetType().Name}");
+
             var benchmark = new Benchmark();
             benchmark.ScenarioName = Scenario.ScenarioName;
             benchmark.ScraperName = WebScraper.GetType().Name;
 
             foreach (var url in Scenario.Urls)
             {
-                benchmark.BenchmarkPerUrl.Add(Evaluate(url));
+                var scrapingResult = Evaluate(url);
+
+                benchmark.BenchmarkPerUrl.Add(scrapingResult.Timing); // todo : this can be gone
+
+                ScrapingOutputAggregator.Aggregate(scrapingResult.ScrapingOutput);
+                ScrapingTimingAggregator.Aggregate(scrapingResult.Timing);
             }
 
-            BenchmarkAggregator.AddBenchmark(benchmark);
+            BenchmarkAggregator.AddBenchmark(benchmark); // todo : this can be gone
 
-            ConsoleLogger.Warn($"-------------------------------Done with scenario : {Scenario.ScenarioName} with scraper {WebScraper.GetType().Name}------------------------------------");
+            ConsoleLogger.Info($"-------------------------------------------------------------------");
             ConsoleLogger.Debug("\r\r");
         }
 
-        private ScrapingBenchmarkResult Evaluate(string url)
+        private UrlScrapingResults Evaluate(string url)
         {
-           var result = new ScrapingBenchmarkResult{Url = url};
+           var results = new UrlScrapingResults(WebScraper.GetType().Name, Scenario.ScenarioName, url);
 
            // todo : see if things need some catching 
 
            ConsoleLogger.Info($"    Evaluating url {url}");
 
-           result.GoToUrlTiming = Evaluate(()=> WebScraper.GoToUrl(url));
+           results.Timing.GoToUrlTiming = Evaluate(()=> WebScraper.GoToUrl(url));
 
-           result.LoadTiming = Evaluate(() => WebScraper.Load());
+           results.Timing.LoadTiming = Evaluate(() => WebScraper.Load());
 
-           EvaluateMetadataExtraction(result);
+           EvaluateMetadataExtraction(results);
 
-           EvaluateContentExclusions(result);
+           EvaluateContentExclusions(results);
 
-           result.GetHtmlResultTiming = Evaluate(() => WebScraper.GetCleanedHtml());
+           EvaluateFinalHtmlBody(results);
 
-           return result;
+           return results;
         }
 
-        private void EvaluateContentExclusions(ScrapingBenchmarkResult result)
+        private void EvaluateContentExclusions(UrlScrapingResults result)
         {
             foreach (var selector in Scenario.Settings.Exclude)
             {
                 try
                 {
-                    var timing = new ElementTiming
+                    bool excludedContent = false;
+                    var duration = Evaluate(() => excludedContent = WebScraper.ExcludeHtml(selector));
+                    ConsoleLogger.Debug($"          Excluded = {excludedContent} for {selector.Type} selector {selector.Path}");
+
+                    result.ScrapingOutput.RegisterContentExclusion(selector.Path, excludedContent);
+                    result.Timing.ContentExclusionTiming.Add(new ElementTiming
                     {
                         SelectorName = selector.Path,
-                        Duration = Evaluate(()=> ExcludeHtml(selector))
-                    };
-
-                    result.ContentExclusionTiming.Add(timing);
+                        Duration = duration
+                    });
                 }
                 catch (Exception ex)
                 {
@@ -78,19 +94,22 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
             }
         }
 
-        private void EvaluateMetadataExtraction(ScrapingBenchmarkResult result)
+        private void EvaluateMetadataExtraction(UrlScrapingResults result)
         {
             foreach (var metadata in Scenario.Settings.Metadata)
             {
                 try
                 {
-                    var timing = new ElementTiming
+                    IEnumerable<string> extraction = new List<string>();
+                    var duration = Evaluate(() => { extraction = WebScraper.ExtractMetadata(metadata.Value); });
+                    ConsoleLogger.Debug($"          Extracted = {extraction.Count()} values for {metadata.Value.Type} selector {metadata.Value.Path}");
+
+                    result.ScrapingOutput.RegisterMetadata(metadata.Value.Path, extraction);
+                    result.Timing.MetadataExtractionTiming.Add(new ElementTiming
                     {
                         SelectorName = metadata.Value.Path,
-                        Duration = Evaluate(() => ExtractMetadata(metadata.Value))
-                    };
-
-                    result.MetadataExtractionTiming.Add(timing);
+                        Duration = duration
+                    });
                 }
                 catch (Exception ex)
                 {
@@ -100,16 +119,16 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
             }
         }
 
-        private void ExcludeHtml(Selector selector)
+        private void EvaluateFinalHtmlBody(UrlScrapingResults result)
         {
-            var result = WebScraper.ExcludeHtml(selector);
-            ConsoleLogger.Debug($"          Excluded = {result} for {selector.Type} selector {selector.Path}");
-        }
+            var body = "";
 
-        private void ExtractMetadata(Selector selector)
-        {
-            var result = WebScraper.ExtractMetadata(selector);
-            ConsoleLogger.Debug($"          Extracted = {result.Count()} values for {selector.Type} selector {selector.Path}");
+            result.Timing.GetHtmlResultTiming = Evaluate(() =>
+            {
+                body = WebScraper.GetCleanedHtml();
+            });
+
+            result.ScrapingOutput.RegisterFinalBody(body);
         }
 
         private TimeSpan Evaluate(Action action)
@@ -117,6 +136,18 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
             var start = DateTime.Now;
             action.Invoke();
             return DateTime.Now - start;
+        }
+
+        private class UrlScrapingResults
+        {
+            public ScrapingTimingResults Timing { get; }
+            public ScrapingOutput ScrapingOutput { get; }
+
+            public UrlScrapingResults(string scraperName, string scenarioName, string url)
+            {
+                ScrapingOutput = new ScrapingOutput(url, scenarioName, scraperName);
+                Timing = new ScrapingTimingResults(url, scenarioName, scraperName);
+            }
         }
     }
 }

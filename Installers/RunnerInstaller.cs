@@ -1,7 +1,5 @@
-﻿using System.ComponentModel;
-using Castle.MicroKernel.Registration;
+﻿using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
-using Castle.MicroKernel.SubSystems.Conversion;
 using Castle.Windsor;
 using WebScrapingBenchmark.Framework.Config;
 using WebScrapingBenchmark.Framework.ScenarioRunner;

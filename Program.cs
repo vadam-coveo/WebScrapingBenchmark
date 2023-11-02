@@ -1,8 +1,11 @@
 ﻿
+
 using Castle.Windsor;
 using WebScrapingBenchmark.Framework.Config;
+using WebScrapingBenchmark.Framework.Logging;
 using WebScrapingBenchmark.Framework.ScenarioRunner;
 using WebScrapingBenchmark.Installers;
+using WebScrapingBenchmark.WebScrapingStrategies;
 
 // todo : maybe later, we may want to have the filter as a cli argument?
 // todo : we may also want to set minimum loglevel?
@@ -15,12 +18,20 @@ container.Install(new FrameworkInstaller(),
                     new RunnerInstaller(scenarios)
                     );
 
-var runners = container.ResolveAll<IScenarioRunner>();
+var runners = container.ResolveAll<IScenarioRunner>().OrderBy(x=> x.WebScraper.GetType().Name).ToList();
+
+var previousScraper = (IWebScraperStrategy)null;
 
 foreach (var runner in runners)
 {
     try
     {
+        if (previousScraper == null || previousScraper != runner.WebScraper)
+        {
+            previousScraper = runner.WebScraper;
+            ConsoleLogger.Warn($"\r\r-----------------Scraper: {runner.WebScraper.GetType().Name}-----------------");
+        }
+
         runner.RunScenario();
     }
     finally

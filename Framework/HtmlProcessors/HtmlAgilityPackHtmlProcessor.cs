@@ -1,11 +1,6 @@
-﻿using AngleSharp.Html.Dom;
-using HtmlAgilityPack;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HtmlAgilityPack;
 using System.Xml.XPath;
+using HtmlAgilityPack.CssSelectors.NetCore;
 using WebScrapingBenchmark.Framework.Config;
 using WebScrapingBenchmark.Framework.Logging;
 using WebScrapingBenchmark.Framework.Scrapers;
@@ -15,9 +10,11 @@ namespace WebScrapingBenchmark.Framework.HtmlProcessors
     public class HtmlAgilityPackHtmlProcessor : IHtmlProcessor
     {
         private HtmlDocument _htmlDocument;
+        private bool _cssSupport;
 
-        public HtmlAgilityPackHtmlProcessor(string html)
+        public HtmlAgilityPackHtmlProcessor(string html, bool cssSupport)
         {
+            _cssSupport = cssSupport;
             _htmlDocument = new HtmlDocument();
             _htmlDocument.LoadHtml(html);
         }
@@ -30,19 +27,23 @@ namespace WebScrapingBenchmark.Framework.HtmlProcessors
         public IEnumerable<string> Extract(Selector selector)
         {
             if (selector.Type == SelectorType.XPATH)
-            {
                 return ExtractWithXpath(selector);
-            }
-            throw new NotImplementedException("ADD CSS");
+
+            if(!_cssSupport)
+                throw new NotImplementedException("no CSS support");
+
+            return ExtractWithCss(selector);
         }
 
         public bool Remove(Selector selector)
         {
             if (selector.Type == SelectorType.XPATH)
-            {
                 return RemoveWithXpath(selector);
-            }
-            throw new NotImplementedException("ADD CSS");
+
+            if (!_cssSupport)
+                throw new NotImplementedException("no CSS support");
+
+            return RemoveWithCss(selector);
         }
 
 
@@ -90,6 +91,29 @@ namespace WebScrapingBenchmark.Framework.HtmlProcessors
             }
 
             return removed;
+        }
+
+        private bool RemoveWithCss(Selector selector)
+        {
+            bool removed = false;
+            foreach (var node in _htmlDocument.QuerySelectorAll(selector.Path))
+            {
+                removed = true;
+                node.Remove();
+            }
+            return removed;
+        }
+
+        private IEnumerable<string> ExtractWithCss(Selector selector)
+        {
+            var output = new List<string>();
+
+            foreach (var node in _htmlDocument.QuerySelectorAll(selector.Path))
+            {
+                output.Add(ProcessorHelper.GetValueOrElement(node, ProcessorHelper.GetPathInfo(selector)));
+            }
+
+            return selector.RemoveDuplicates ? output.Distinct() : output;
         }
 
         private string GetValueOrElement(HtmlNodeNavigator htmlNode)

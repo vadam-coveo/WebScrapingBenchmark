@@ -1,15 +1,7 @@
-﻿using AngleSharp.Html.Dom;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AngleSharp;
-using AngleSharp.Html.Parser;
+﻿using AngleSharp;
 using WebScrapingBenchmark.Framework.Config;
 using AngleSharp.Dom;
-using WebScrapingBenchmark.Framework.Logging;
-using static WebScrapingBenchmark.Framework.Scrapers.ProcessorHelper;
+using WebScrapingBenchmark.Framework.Scrapers;
 using ConsoleLogger = WebScrapingBenchmark.Framework.Logging.ConsoleLogger;
 
 namespace WebScrapingBenchmark.Framework.HtmlProcessors
@@ -74,27 +66,17 @@ namespace WebScrapingBenchmark.Framework.HtmlProcessors
             return $"*[xpath>'{selector.Path}']";
         }
 
-        private IPathInfo GetPathInfo(Selector selector)
-        {
-            if (selector.Type == SelectorType.CSS)
-            {
-                return CssPath.Create(selector.Path);
-            }
-            return XpathInfo.Create(selector.Path);
-        }
-
         private IEnumerable<string> DoExtract(Selector selector)
         {
             try
             {
-                var pathInfo = GetPathInfo(selector);
-                object extractedValue = null;
-
+                var pathInfo = ProcessorHelper.GetPathInfo(selector);
+         
                 var selectedDomSet = _angleSharpDocument.QuerySelectorAll(GetFormattedPath(selector));
 
                 if (selectedDomSet != null && selectedDomSet.Any())
                 {
-                    var values = selectedDomSet.Select(node => GetValueOrElement(node, pathInfo)).Where(x => x != null);
+                    var values = selectedDomSet.Select(node => ProcessorHelper.GetValueOrElement(node, pathInfo)).Where(x => x != null);
 
                     if (selector.RemoveDuplicates)
                         values = values.Distinct();

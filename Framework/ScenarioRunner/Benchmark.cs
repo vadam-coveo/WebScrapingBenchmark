@@ -1,11 +1,13 @@
-﻿namespace WebScrapingBenchmark.Framework.ScenarioRunner
+﻿using WebScrapingBenchmark.Framework.UrlScrapingResults;
+
+namespace WebScrapingBenchmark.Framework.ScenarioRunner
 {
     public class Benchmark
     {
         public string ScenarioName;
         public string ScraperName;
 
-        public List<ScrapingBenchmarkResult> BenchmarkPerUrl = new();
+        public List<ScrapingTimingResults> BenchmarkPerUrl = new();
 
         public Lazy<TimeSpan> AverageGoToUrl => new Lazy<TimeSpan>(() => BenchmarkPerUrl.Select(url => url.GoToUrlTiming).Average());
         public Lazy<TimeSpan> AverageLoad => new Lazy<TimeSpan>(() => BenchmarkPerUrl.Select(url => url.LoadTiming).Average());
@@ -18,17 +20,6 @@
         public Lazy<TimeSpan> FastestGetHtmlResult => new Lazy<TimeSpan>(() => BenchmarkPerUrl.Select(url => url.GetHtmlResultTiming).Min());
     }
 
-    public class ScrapingBenchmarkResult
-    {
-        public string Url;
-        public TimeSpan GoToUrlTiming;
-        public TimeSpan LoadTiming;
-        public TimeSpan GetHtmlResultTiming;
-
-        public List<ElementTiming> MetadataExtractionTiming = new();
-        public List<ElementTiming> ContentExclusionTiming = new ();
-    }
-    
     public class ElementTiming
     {
         public string SelectorName;

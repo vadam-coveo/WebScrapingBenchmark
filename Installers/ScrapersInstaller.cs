@@ -30,7 +30,8 @@ namespace WebScrapingBenchmark.Installers
             container.Register(
                 Component.For<IHtmlProcessorFactory>().AsFactory(),
                 Component.For<IHtmlProcessor>().ImplementedBy<AnglesharpHtmlProcessor>().Named("AngleSharpHtmlProcessor").LifestyleTransient(),
-                Component.For<IHtmlProcessor>().ImplementedBy<HtmlAgilityPackHtmlProcessor>().Named("HtmlAgilityPackHtmlProcessor").LifestyleTransient()
+                Component.For<IHtmlProcessor>().ImplementedBy<HtmlAgilityPackHtmlProcessor>().Named("HtmlAgilityPackHtmlProcessor").LifestyleTransient(),
+                Component.For<IHtmlProcessor>().ImplementedBy<RevampedHtmlAgilityHtmlProcessor>().Named("RevampedHtmlAgilityHtmlProcessor").LifestyleTransient()
             );
         }
     }

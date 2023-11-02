@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebScrapingBenchmark.Framework.ChromeDriver;
+﻿using WebScrapingBenchmark.Framework.ChromeDriver;
 using WebScrapingBenchmark.Framework.Config;
 using WebScrapingBenchmark.Framework.HtmlProcessors;
 

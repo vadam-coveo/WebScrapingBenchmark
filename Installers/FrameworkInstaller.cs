@@ -5,6 +5,8 @@ using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using WebScrapingBenchmark.Framework.ChromeDriver;
 using WebScrapingBenchmark.Framework.ScenarioRunner;
+using WebScrapingBenchmark.Framework.ScrapingResultComparing;
+using WebScrapingBenchmark.Framework.UrlScrapingResults;
 
 namespace WebScrapingBenchmark.Installers
 {
@@ -18,6 +20,16 @@ namespace WebScrapingBenchmark.Installers
             container.Register(Component.For<IChromeDriverWrapper>().ImplementedBy<ChromeDriverWrapper>()); // we'll try with 1 singleton instance for now since we're not running anything in parallel
             container.Register(Component.For<ICache<CachedRequest>>().ImplementedBy<Cache<CachedRequest>>());
             container.Register(Component.For<IBenchmarkAggregator>().ImplementedBy<BenchmarkAggregator>().LifestyleSingleton());
+
+            RegisterAggregators(container);
+        }
+        
+        private void RegisterAggregators(IWindsorContainer container)
+        {
+            container.Register(
+                Component.For<IAggregator<ScrapingOutput>>().ImplementedBy<ConcurrentAggregator<ScrapingOutput>>(),
+                Component.For<IAggregator<ScrapingTimingResults>>().ImplementedBy<ConcurrentAggregator<ScrapingTimingResults>>()
+            );
         }
     }
 }

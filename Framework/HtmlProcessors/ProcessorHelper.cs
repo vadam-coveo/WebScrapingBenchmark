@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 using AngleSharp.Dom;
 using HtmlAgilityPack;
+using WebScrapingBenchmark.Framework.Config;
 
 namespace WebScrapingBenchmark.Framework.Scrapers
 {
@@ -32,6 +28,36 @@ namespace WebScrapingBenchmark.Framework.Scrapers
             value = CleanHtml(value);
 
             return value;
+        }
+
+        /// <summary>
+        /// Extract the value of the HTML node if it is an attribute or text node, or the node's HTML
+        /// content if it is an element.
+        /// </summary>
+        public static string GetValueOrElement(HtmlNode htmlNode, IPathInfo pathInfo)
+        {
+            string value;
+            if (htmlNode.NodeType == HtmlNodeType.Text)
+                value = htmlNode.InnerText;
+            else if (pathInfo.IsText)
+                value = htmlNode.InnerText;
+            else if (pathInfo.IsAttribute)
+                value = htmlNode.GetAttributeValue(pathInfo.AttributeName, null);
+            else
+                value = htmlNode.OuterHtml;
+
+            value = CleanHtml(value);
+
+            return value;
+        }
+
+        public static IPathInfo GetPathInfo(Selector selector)
+        {
+            if (selector.Type == SelectorType.CSS)
+            {
+                return CssPath.Create(selector.Path);
+            }
+            return XpathInfo.Create(selector.Path);
         }
 
         /// <summary>

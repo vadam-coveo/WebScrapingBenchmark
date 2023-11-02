@@ -1,12 +1,11 @@
 ﻿using WebScrapingBenchmark.Framework.ChromeDriver;
-using WebScrapingBenchmark.Framework.Config;
 using WebScrapingBenchmark.Framework.HtmlProcessors;
 
 namespace WebScrapingBenchmark.WebScrapingStrategies
 {
-    public class AngleSharpScraperStrategy : HtmlProcessorBase
+    public class AnglesharpWithXml : HtmlProcessorBase
     {
-        public AngleSharpScraperStrategy(IChromeDriverWrapper driverWrapper, IHtmlProcessorFactory htmlProcessorFactory) : base(driverWrapper, htmlProcessorFactory)
+        public AnglesharpWithXml(IChromeDriverWrapper driverWrapper, IHtmlProcessorFactory htmlProcessorFactory) : base(driverWrapper, htmlProcessorFactory)
         {
         }
 

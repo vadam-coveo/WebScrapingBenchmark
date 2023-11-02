@@ -4,7 +4,9 @@
     {
         IHtmlProcessor GetAngleSharpHtmlProcessor(string html, bool xpathSupport);
 
-        IHtmlProcessor GetHtmlAgilityPackHtmlProcessor(string html);
+        IHtmlProcessor GetHtmlAgilityPackHtmlProcessor(string html, bool cssSupport);
+
+        IHtmlProcessor GetRevampedHtmlAgilityHtmlProcessor(string html);
 
         void Release(IHtmlProcessor processor);
     }

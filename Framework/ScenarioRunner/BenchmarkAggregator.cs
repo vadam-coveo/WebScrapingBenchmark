@@ -1,13 +1,14 @@
 ﻿using System.Collections.Concurrent;
-using System.Linq;
 using System.Text;
 using Humanizer;
+using WebScrapingBenchmark.Framework.ScrapingResultComparing;
 
 namespace WebScrapingBenchmark.Framework.ScenarioRunner
 {
     public class BenchmarkAggregator : IBenchmarkAggregator
     {
         private readonly ConcurrentBag<Benchmark> _benchmarks = new ConcurrentBag<Benchmark>();
+        private readonly ConcurrentBag<ScrapingOutput> _scrapingOutputs = new();
 
         public void AddBenchmark(Benchmark benchmark)
         {
