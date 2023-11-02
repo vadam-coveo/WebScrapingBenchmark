@@ -1,6 +1,7 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
+using WebScrapingBenchmark.Framework.Logging;
 
 namespace WebScrapingBenchmark.Framework.Reporting
 {
@@ -9,6 +10,15 @@ namespace WebScrapingBenchmark.Framework.Reporting
         public override string? ConvertToString(object? value, IWriterRow row, MemberMapData memberMapData)
         {
             return ((Lazy<T>)value)?.Value?.ToString();
+        }
+    }
+
+    public class LazyTimespanConverter : DefaultTypeConverter
+    {
+        public override string? ConvertToString(object? value, IWriterRow row, MemberMapData memberMapData)
+        {
+            var casted = value as Lazy<TimeSpan>;
+            return FormatHelper.FormatDuration(casted?.Value ?? TimeSpan.Zero);
         }
     }
 }

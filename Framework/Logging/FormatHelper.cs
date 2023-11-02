@@ -21,6 +21,12 @@ namespace WebScrapingBenchmark.Framework.Logging
             return (milis.ToString("n", _numberFormat.Value) + " ms").PadLeft(30);
         }
 
+        public static string FormatDuration(TimeSpan duration)
+        {
+            var milis = Convert.ToDecimal(duration.Ticks) / (decimal)10000;
+            return milis.ToString("n", _numberFormat.Value);
+        }
+
         public static long GetBytes(string input)
         {
             if(string.IsNullOrEmpty(input))

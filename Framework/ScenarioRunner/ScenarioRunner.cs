@@ -1,9 +1,4 @@
-﻿using AngleSharp.Dom;
-using Humanizer;
-using Humanizer.Localisation;
-using System;
-using System.Globalization;
-using WebScrapingBenchmark.Framework.Config;
+﻿using WebScrapingBenchmark.Framework.Config;
 using WebScrapingBenchmark.Framework.Logging;
 using WebScrapingBenchmark.Framework.ScrapingResultComparing;
 using WebScrapingBenchmark.Framework.UrlScrapingResults;
@@ -61,7 +56,6 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
            ConsoleLogger.Debug("\r\r");
 
            EvaluateMetadataExtraction(results);
-
            EvaluateContentExclusions(results);
 
            ConsoleLogger.Debug("\r");
