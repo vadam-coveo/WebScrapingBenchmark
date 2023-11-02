@@ -70,8 +70,8 @@ namespace WebScrapingBenchmark.Framework.Reporting
                 reportingEntries.Add(CreateConsoleReportingEntry("TotalScrapingTime", totalScrapingTimeAverage, totalScrapingTimeBest, totalScrapingTimeWorst, result => result.TotalScrapingTime.Value));
 
                 ConsoleLogger.Warn(scenarioGroup.Key);
-                ConsoleLogger.Info($"Initial HTML in bytes:       {scenarioGroup.ElementAt(0).InitialHtmlBodySize.Bytes().Humanize()}");
-                ConsoleLogger.Info($"Average final HTML in bytes: {scenarioGroup.Select(result => result.FinalHtmlBodySize).Average().Bytes().Humanize()}");
+                ConsoleLogger.Info($"Initial HTML in bytes:       {scenarioGroup.ElementAt(0).InitialHtmlBytes.Bytes().Humanize()}");
+                ConsoleLogger.Info($"Average final HTML in bytes: {scenarioGroup.Select(result => result.FinalHtmlBytes).Average().Bytes().Humanize()}");
                 ConsoleLogger.WriteLine(Formatter.Format(reportingEntries));
             }
         }
