@@ -2,12 +2,13 @@
 
 namespace WebScrapingBenchmark.WebScrapingStrategies
 {
-    public class CdpScraperStrategy : IWebScraperStrategy
+    public class CdpScraperStrategy //: IWebScraperStrategy
     {
         public string ScraperName { get; set; }
 
-        public void GoToUrl(string url)
+        public string GoToUrl(string url)
         {
+            return "";
         }
 
         public void Load()

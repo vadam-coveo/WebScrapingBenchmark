@@ -1,4 +1,7 @@
 ﻿using System.Globalization;
+using System.Text;
+using Humanizer;
+using static System.Text.ASCIIEncoding;
 
 namespace WebScrapingBenchmark.Framework.Logging
 {
@@ -16,6 +19,19 @@ namespace WebScrapingBenchmark.Framework.Logging
             var milis = Convert.ToDecimal(duration.Ticks) / (decimal)10000;
 
             return (milis.ToString("n", _numberFormat.Value) + " ms").PadLeft(30);
+        }
+
+        public static long GetBytes(string input)
+        {
+            if(string.IsNullOrEmpty(input))
+                return 0;
+
+            return Encoding.ASCII.GetByteCount(input);
+        }
+
+        public static string GetFormattedByes(long input)
+        {
+            return input.Bytes().Humanize().PadLeft(20);
         }
     }
 }

@@ -20,11 +20,12 @@ namespace WebScrapingBenchmark.WebScrapingStrategies
             HtmlProcessorFactory = htmlProcessorFactory;
         }
 
-        public void GoToUrl(string url)
+        public string GoToUrl(string url)
         {
             _htmlBody = DriverWrapper.GetHtml(url, TimeSpan.FromSeconds(2));
             ResetAnglesharp();
             ResetAgilityPack();
+            return _htmlBody;
         }
 
         public void Load()
