@@ -85,7 +85,7 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
 
                     ConsoleLogger.Debug($"\t{FormatHelper.StringifyDuration(duration)} \t {FormatHelper.GetFormattedByes(diff, 10)} [{(excludedContent ? "+" : "-")}] excluded for {selector.Type} selector {selector.Path}");
 
-                    result.RegisterContentExclusion(selector.Path, excludedContent);
+                    result.RegisterContentExclusion(selector.Path, diff);
                     result.ContentExclusionTiming.Add(new ElementTiming
                     {
                         SelectorName = selector.Path,
