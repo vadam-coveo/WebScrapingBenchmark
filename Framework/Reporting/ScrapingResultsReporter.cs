@@ -1,6 +1,8 @@
 ﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using AsciiTableFormatter;
 using CsvHelper;
 using Humanizer;
 using WebScrapingBenchmark.Framework.Logging;
@@ -13,9 +15,9 @@ namespace WebScrapingBenchmark.Framework.Reporting
     {
         private IAggregator<ScrapingMetrics> ScrapingMetricsAggregator { get; }
 
-        public ScrapingResultsReporter(IAggregator<ScrapingMetrics> scrapingOutputAggregator)
+        public ScrapingResultsReporter(IAggregator<ScrapingMetrics> scrapingMetricsAggregator)
         {
-            ScrapingMetricsAggregator = scrapingOutputAggregator;
+            ScrapingMetricsAggregator = scrapingMetricsAggregator;
         }
 
         public void ReportResults()
@@ -28,42 +30,72 @@ namespace WebScrapingBenchmark.Framework.Reporting
                 }
             }
 
-            Console.WriteLine("Results:");
+            ConsoleLogger.WriteLine("Results:");
 
             var resultsGroupByScenarioIdentifier =
                 ScrapingMetricsAggregator.Items.GroupBy(item => item.ScenarioIdentifier);
 
             foreach (var scenarioGroup in resultsGroupByScenarioIdentifier)
             {
-                var builder = new StringBuilder();
-                builder.AppendLine($"{scenarioGroup.Key}");
+                var reportingEntries = new List<ConsoleReportingEntry>();
 
-                builder.AppendLine($"\t{FormatHelper.StringifyDuration(scenarioGroup.Select(result => result.GoToUrlTiming).Average())}\tAverage GoToUrl");
-                builder.AppendLine($"\t{FormatHelper.StringifyDuration(scenarioGroup.Select(result => result.LoadTiming).Average())}\tAverage Load");
-                builder.AppendLine($"\t{FormatHelper.StringifyDuration(scenarioGroup.Select(result => result.GetHtmlResultTiming).Average())}\tAverage GetHtmlResult");
+                var goToUrlAverage = scenarioGroup.Select(result => result.GoToUrlTiming).Average();
+                var goToUrlBest = GetBest(scenarioGroup, result => result.GoToUrlTiming);
+                var goToUrlWorst = GetWorst(scenarioGroup, result => result.GoToUrlTiming);
+                var loadAverage = scenarioGroup.Select(result => result.LoadTiming).Average();
+                var loadBest = GetBest(scenarioGroup, result => result.LoadTiming);
+                var loadWorst = GetWorst(scenarioGroup, result => result.LoadTiming);
+                var getHtmlResultAverage = scenarioGroup.Select(result => result.GetHtmlResultTiming).Average();
+                var getHtmlResultBest = GetBest(scenarioGroup, result => result.GetHtmlResultTiming);
+                var getHtmlResultWorst = GetWorst(scenarioGroup, result => result.GetHtmlResultTiming);
 
-                builder.AppendLine($"\t{FormatHelper.StringifyDuration(scenarioGroup.Select(result => result.AverageMetadataExtraction.Value).Average())}\tAverage MetadataExtraction");
-                builder.AppendLine($"\t{FormatHelper.StringifyDuration(scenarioGroup.Select(result => result.AverageContentExclusion.Value).Average())}\tAverage ContentExclusion");
+                var metadataExtractionAverage = scenarioGroup.Select(result => result.AverageMetadataExtraction.Value).Average();
+                var metadataExtractionBest = GetBest(scenarioGroup, result => result.AverageMetadataExtraction.Value);
+                var metadataExtractionWorst = GetWorst(scenarioGroup, result => result.AverageMetadataExtraction.Value);
+                var contentExclusionAverage = scenarioGroup.Select(result => result.AverageContentExclusion.Value).Average();
+                var contentExclusionBest = GetBest(scenarioGroup, result => result.AverageContentExclusion.Value);
+                var contentExclusionWorst = GetWorst(scenarioGroup, result => result.AverageContentExclusion.Value);
 
-                builder.AppendLine($"\t{FormatHelper.StringifyDuration(scenarioGroup.Select(result => result.TotalScrapingTime.Value).Average())}\tAverage TotalScrapingTime");
+                var totalScrapingTimeAverage = scenarioGroup.Select(result => result.TotalScrapingTime.Value).Average();
+                var totalScrapingTimeBest = GetBest(scenarioGroup, result => result.TotalScrapingTime.Value);
+                var totalScrapingTimeWorst = GetWorst(scenarioGroup, result => result.TotalScrapingTime.Value);
 
-                builder.AppendLine($"\t{OutputBest(scenarioGroup, result => result.GoToUrlTiming)}\t\tFastest GoToUrl");
-                builder.AppendLine($"\t{OutputBest(scenarioGroup, result => result.LoadTiming)}\t\tFastest Load");
-                builder.AppendLine($"\t{OutputBest(scenarioGroup, result => result.GetHtmlResultTiming)}\t\tFastest GetHtmlResult");
+                reportingEntries.Add(CreateConsoleReportingEntry("GoToUrl", goToUrlAverage, goToUrlBest, goToUrlWorst, result => result.GoToUrlTiming));
+                reportingEntries.Add(CreateConsoleReportingEntry("Load", loadAverage, loadBest, loadWorst, result => result.LoadTiming));
+                reportingEntries.Add(CreateConsoleReportingEntry("GetHtmlResult", getHtmlResultAverage, getHtmlResultBest, getHtmlResultWorst, result => result.GetHtmlResultTiming));
 
-                builder.AppendLine($"\t{OutputBest(scenarioGroup, result => result.TotalMetadataExtractionTime.Value)}\tFastest MetadataExtraction");
-                builder.AppendLine($"\t{OutputBest(scenarioGroup, result => result.TotalContentExclusionTime.Value)}\tFastest ContentExclusion");
+                reportingEntries.Add(CreateConsoleReportingEntry("MetadataExtraction", metadataExtractionAverage, metadataExtractionBest, metadataExtractionWorst, result => result.AverageContentExclusion.Value));
+                reportingEntries.Add(CreateConsoleReportingEntry("ContentExclusion", contentExclusionAverage, contentExclusionBest, contentExclusionWorst, result => result.AverageContentExclusion.Value));
 
-                builder.AppendLine($"\t{OutputBest(scenarioGroup, result => result.TotalScrapingTime.Value)}\tFastest TotalScrapingTime");
+                reportingEntries.Add(CreateConsoleReportingEntry("TotalScrapingTime", totalScrapingTimeAverage, totalScrapingTimeBest, totalScrapingTimeWorst, result => result.TotalScrapingTime.Value));
 
-                Console.WriteLine(builder);
+                ConsoleLogger.Warn(scenarioGroup.Key);
+                ConsoleLogger.WriteLine(Formatter.Format(reportingEntries));
             }
         }
 
-        private static string OutputBest(IEnumerable<ScrapingTimingResults> group, Func<ScrapingTimingResults, TimeSpan> criteria)
+        private static ConsoleReportingEntry CreateConsoleReportingEntry(string metric,
+                                                                         TimeSpan average,
+                                                                         ScrapingMetrics? fastest,
+                                                                         ScrapingMetrics? slowest,
+                                                                         Func<ScrapingMetrics, TimeSpan> criteria)
         {
-            var fastest = group.OrderBy(criteria).FirstOrDefault(result => criteria.Invoke(result) != TimeSpan.Zero);
-            return fastest != null ? $"{FormatHelper.StringifyDuration(criteria.Invoke(fastest))} <= {fastest.ScraperName}" : "None";
+            return new ConsoleReportingEntry(metric,
+                                             FormatHelper.StringifyDuration(average),
+                                             FormatHelper.StringifyDurationDifference(fastest != null ? criteria(fastest) : TimeSpan.Zero, average),
+                                             FormatHelper.FormatStrategyName(fastest?.ScraperName ?? "None"),
+                                             FormatHelper.StringifyDurationDifference(slowest != null ? criteria(slowest) : TimeSpan.Zero, average),
+                                             FormatHelper.FormatStrategyName(slowest?.ScraperName ?? "None"));
+        }
+
+        private static ScrapingMetrics? GetBest(IEnumerable<ScrapingMetrics> group, Func<ScrapingMetrics, TimeSpan> criteria)
+        {
+            return group.OrderBy(criteria).FirstOrDefault(result => criteria.Invoke(result) != TimeSpan.Zero);
+        }
+
+        private static ScrapingMetrics? GetWorst(IEnumerable<ScrapingMetrics> group, Func<ScrapingMetrics, TimeSpan> criteria)
+        {
+            return group.OrderByDescending(criteria).FirstOrDefault(result => criteria.Invoke(result) != TimeSpan.Zero);
         }
     }
 }

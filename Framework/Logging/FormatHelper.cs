@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using System.Text;
 using Humanizer;
-using static System.Text.ASCIIEncoding;
 
 namespace WebScrapingBenchmark.Framework.Logging
 {
@@ -25,7 +24,24 @@ namespace WebScrapingBenchmark.Framework.Logging
         {
             var milis = Convert.ToDecimal(duration.Ticks) / (decimal)10000;
 
-            return (milis.ToString("n", _numberFormat.Value) + " ms").PadLeft(30);
+            return (milis.ToString("n", _numberFormat.Value) + " ms").PadLeft(15);
+        }
+
+        public static string StringifyDurationDifference(TimeSpan duration, TimeSpan comparableDuration)
+        {
+            var difference = duration - comparableDuration;
+
+            if (difference == TimeSpan.Zero) return StringifyDuration(duration);
+
+            var differenceSign = "+";
+
+            if (difference < TimeSpan.Zero)
+            {
+                differenceSign = "-";
+                difference = difference.Negate();
+            }
+
+            return $"{StringifyDuration(duration)} ({differenceSign}{StringifyDuration(difference)})";
         }
 
         public static string FormatDuration(TimeSpan duration)
@@ -38,6 +54,11 @@ namespace WebScrapingBenchmark.Framework.Logging
         {
             var milis = Convert.ToDecimal(duration.Ticks) / (decimal)10000;
             return milis.ToString("n", _excelNumberFormat.Value);
+        }
+
+        public static string FormatStrategyName(string name)
+        {
+            return name.PadRight(40);
         }
 
         public static long GetBytes(string input)
