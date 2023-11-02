@@ -3,9 +3,9 @@ using WebScrapingBenchmark.Framework.HtmlProcessors;
 
 namespace WebScrapingBenchmark.WebScrapingStrategies
 {
-    public class AnglesharpWithXml : HtmlProcessorBase
+    public class AnglesharpWithXPath : HtmlProcessorBase
     {
-        public AnglesharpWithXml(IChromeDriverWrapper driverWrapper, IHtmlProcessorFactory htmlProcessorFactory) : base(driverWrapper, htmlProcessorFactory)
+        public AnglesharpWithXPath(IChromeDriverWrapper driverWrapper, IHtmlProcessorFactory htmlProcessorFactory) : base(driverWrapper, htmlProcessorFactory)
         {
         }
 
