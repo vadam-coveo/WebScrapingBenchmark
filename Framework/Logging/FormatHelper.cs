@@ -37,7 +37,7 @@ namespace WebScrapingBenchmark.Framework.Logging
         public static string FormatDurationForExcel(TimeSpan duration)
         {
             var milis = Convert.ToDecimal(duration.Ticks) / (decimal)10000;
-            return milis.ToString("n", _numberFormat.Value);
+            return milis.ToString("n", _excelNumberFormat.Value);
         }
 
         public static long GetBytes(string input)
