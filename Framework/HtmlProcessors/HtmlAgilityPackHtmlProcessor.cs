@@ -3,7 +3,6 @@ using System.Xml.XPath;
 using HtmlAgilityPack.CssSelectors.NetCore;
 using WebScrapingBenchmark.Framework.Config;
 using WebScrapingBenchmark.Framework.Logging;
-using WebScrapingBenchmark.Framework.Scrapers;
 
 namespace WebScrapingBenchmark.Framework.HtmlProcessors
 {

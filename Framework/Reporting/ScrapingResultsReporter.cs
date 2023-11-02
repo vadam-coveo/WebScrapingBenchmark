@@ -7,7 +7,6 @@ using CsvHelper;
 using Humanizer;
 using WebScrapingBenchmark.Framework.Logging;
 using WebScrapingBenchmark.Framework.ScenarioRunner;
-using WebScrapingBenchmark.Framework.ScrapingResultComparing;
 using WebScrapingBenchmark.Framework.UrlScrapingResults;
 
 namespace WebScrapingBenchmark.Framework.Reporting

@@ -1,6 +1,5 @@
 ﻿using WebScrapingBenchmark.Framework.Config;
 using WebScrapingBenchmark.Framework.Logging;
-using WebScrapingBenchmark.Framework.ScrapingResultComparing;
 using WebScrapingBenchmark.Framework.UrlScrapingResults;
 using WebScrapingBenchmark.WebScrapingStrategies;
 
@@ -65,7 +64,7 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
             result.GoToUrlTiming = Evaluate(() => html = WebScraper.GoToUrl(url));
             result.RegisterInitialBody(html);
 
-            ConsoleLogger.Info($"\t{FormatHelper.StringifyDuration(result.GoToUrlTiming)}  {FormatHelper.GetFormattedByes(result.InitialHtmlBodySize, 16)} - Browsed to url {url}");
+            ConsoleLogger.Info($"\t{FormatHelper.StringifyDuration(result.GoToUrlTiming)}  {FormatHelper.GetFormattedByes(result.InitialHtmlBytes, 16)} - Browsed to url {url}");
         }
 
         private void EvaluateContentExclusions(ScrapingMetrics result)
@@ -75,10 +74,18 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
                 try
                 {
                     bool excludedContent = false;
-                    var duration = Evaluate(() => excludedContent = WebScraper.ExcludeHtml(selector));
-                    ConsoleLogger.Debug($"\t{FormatHelper.StringifyDuration(duration)} \t Excluded = {excludedContent} for {selector.Type} selector {selector.Path}");
 
-                    result.RegisterContentExclusion(selector.Path, excludedContent);
+                    var before = FormatHelper.GetBytes(WebScraper.GetCleanedHtml());
+
+                    var duration = Evaluate(() => excludedContent = WebScraper.ExcludeHtml(selector));
+
+                    var after = FormatHelper.GetBytes(WebScraper.GetCleanedHtml());
+
+                    var diff = before - after;
+
+                    ConsoleLogger.Debug($"\t{FormatHelper.StringifyDuration(duration)} \t {FormatHelper.GetFormattedByes(diff, 10)} [{(excludedContent ? "+" : "-")}] excluded for {selector.Type} selector {selector.Path}");
+
+                    result.RegisterContentExclusion(selector.Path, diff);
                     result.ContentExclusionTiming.Add(new ElementTiming
                     {
                         SelectorName = selector.Path,
@@ -129,7 +136,7 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
 
             result.RegisterFinalBody(body);
 
-            ConsoleLogger.Info($"\t{FormatHelper.StringifyDuration(result.TotalScrapingTime.Value)} \t Scraping time {FormatHelper.GetFormattedByes(result.BodySizeDiff, 20)} removed from intial body");
+            ConsoleLogger.Info($"\t{FormatHelper.StringifyDuration(result.TotalScrapingTime.Value)} \t Scraping time {FormatHelper.GetFormattedByes(result.ExcludedBytes, 20)} removed from intial body");
         }
 
         private TimeSpan Evaluate(Action action)
@@ -137,17 +144,6 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
             var start = DateTime.Now;
             action.Invoke();
             return DateTime.Now - start;
-        }
-
-        private class UrlScrapingResults
-        {
-            public ScrapingTimingResults Timing => ScrapingOutput;
-            public ScrapingOutput ScrapingOutput { get; }
-
-            public UrlScrapingResults(string scraperName, string scenarioName, string url)
-            {
-                ScrapingOutput = new ScrapingMetrics(url, scenarioName, scraperName);
-            }
         }
     }
 }

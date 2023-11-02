@@ -6,7 +6,6 @@ using Castle.Windsor;
 using WebScrapingBenchmark.Framework.ChromeDriver;
 using WebScrapingBenchmark.Framework.Reporting;
 using WebScrapingBenchmark.Framework.ScenarioRunner;
-using WebScrapingBenchmark.Framework.ScrapingResultComparing;
 using WebScrapingBenchmark.Framework.UrlScrapingResults;
 
 namespace WebScrapingBenchmark.Installers
