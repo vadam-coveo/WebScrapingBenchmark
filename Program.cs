@@ -3,6 +3,7 @@
 using Castle.Windsor;
 using WebScrapingBenchmark.Framework.Config;
 using WebScrapingBenchmark.Framework.Logging;
+using WebScrapingBenchmark.Framework.Reporting;
 using WebScrapingBenchmark.Framework.ScenarioRunner;
 using WebScrapingBenchmark.Installers;
 using WebScrapingBenchmark.WebScrapingStrategies;
@@ -40,8 +41,8 @@ foreach (var runner in runners)
     }
 }
 
-var benchmarkAggregator = container.Resolve<IBenchmarkAggregator>();
-benchmarkAggregator.ReportBenchmarks();
+var scrapingResultsReporter = container.Resolve<IScrapingResultsReporter>();
+scrapingResultsReporter.ReportResults();
 
 // todo : interpret metrics
 
