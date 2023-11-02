@@ -1,6 +1,5 @@
 ﻿using CsvHelper.Configuration.Attributes;
 using WebScrapingBenchmark.Framework.Reporting;
-using WebScrapingBenchmark.Framework.ScenarioRunner;
 
 namespace WebScrapingBenchmark.Framework.UrlScrapingResults;
 
