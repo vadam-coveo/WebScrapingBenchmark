@@ -5,7 +5,7 @@ namespace WebScrapingBenchmark.Framework.ScrapingResultComparing
 {
     public class ScrapingOutput : BaseUrlScrapingResult, IEquatable<ScrapingOutput>
     {
-        public string Identifier => $"[{ScenarioName}] : {Url}";
+        
 
         private Dictionary<string, IEnumerable<string>> Metadata = new();
         private Dictionary<string, bool> ContentExclusions = new();
