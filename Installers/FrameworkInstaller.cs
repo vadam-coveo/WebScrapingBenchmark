@@ -28,8 +28,7 @@ namespace WebScrapingBenchmark.Installers
         private void RegisterAggregators(IWindsorContainer container)
         {
             container.Register(
-                Component.For<IAggregator<ScrapingOutput>>().ImplementedBy<ConcurrentAggregator<ScrapingOutput>>(),
-                Component.For<IAggregator<ScrapingTimingResults>>().ImplementedBy<ConcurrentAggregator<ScrapingTimingResults>>()
+                Component.For<IAggregator<ScrapingMetrics>>().ImplementedBy<ConcurrentAggregator<ScrapingMetrics>>()
             );
         }
     }

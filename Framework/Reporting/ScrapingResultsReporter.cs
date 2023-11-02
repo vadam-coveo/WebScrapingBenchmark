@@ -14,13 +14,11 @@ namespace WebScrapingBenchmark.Framework.Reporting
 {
     public class ScrapingResultsReporter : IScrapingResultsReporter
     {
-        private IAggregator<ScrapingOutput> ScrapingOutputAggregator { get; }
-        private IAggregator<ScrapingTimingResults> ScrapingTimingAggregator { get; }
+        private IAggregator<ScrapingMetrics> ScrapingMetricsAggregator { get; }
 
-        public ScrapingResultsReporter(IAggregator<ScrapingOutput> scrapingOutputAggregator, IAggregator<ScrapingTimingResults> scrapingTimingAggregator)
+        public ScrapingResultsReporter(IAggregator<ScrapingMetrics> scrapingOutputAggregator)
         {
-            ScrapingOutputAggregator = scrapingOutputAggregator;
-            ScrapingTimingAggregator = scrapingTimingAggregator;
+            ScrapingMetricsAggregator = scrapingOutputAggregator;
         }
 
         public void ReportResults()
@@ -29,14 +27,14 @@ namespace WebScrapingBenchmark.Framework.Reporting
             {
                 using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
                 {
-                    csv.WriteRecords(ScrapingTimingAggregator.Items);
+                    csv.WriteRecords(ScrapingMetricsAggregator.Items);
                 }
             }
 
             Console.WriteLine("Results:");
 
             var resultsGroupByScenarioIdentifier =
-                ScrapingTimingAggregator.Items.GroupBy(item => item.ScenarioIdentifier);
+                ScrapingMetricsAggregator.Items.GroupBy(item => item.ScenarioIdentifier);
 
             foreach (var scenarioGroup in resultsGroupByScenarioIdentifier)
             {

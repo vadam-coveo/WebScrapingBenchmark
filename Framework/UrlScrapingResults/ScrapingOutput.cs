@@ -3,17 +3,15 @@ using WebScrapingBenchmark.Framework.UrlScrapingResults;
 
 namespace WebScrapingBenchmark.Framework.ScrapingResultComparing
 {
-    public class ScrapingOutput : BaseUrlScrapingResult, IEquatable<ScrapingOutput>
+    public class ScrapingOutput : ScrapingTimingResults, IEquatable<ScrapingOutput>
     {
-        
-
         public readonly Dictionary<string, IEnumerable<string>> Metadata = new();
         public readonly Dictionary<string, bool> ContentExclusions = new();
         public string FinalHtmlBody;
-        public long InitialHtmlBodySize;
-        public long FinalHtmlBodySize;
-        public long BodySizeDiff;
-
+        public long InitialHtmlBodySize { get; private set; }
+        public long FinalHtmlBodySize { get; private set; }
+        public long BodySizeDiff { get; private set; }
+        
         public ScrapingOutput(string url, string scenarioName, string scraperName) :base(url, scenarioName, scraperName)
         {
         }
