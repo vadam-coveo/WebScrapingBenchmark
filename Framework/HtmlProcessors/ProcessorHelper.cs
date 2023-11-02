@@ -12,8 +12,7 @@ namespace WebScrapingBenchmark.Framework.Scrapers
         /// Extract the value of the HTML node if it is an attribute or text node, or the node's HTML
         /// content if it is an element.
         /// </summary>
-        public static string GetValueOrElement(IElement htmlNode,
-            IPathInfo pathInfo)
+        public static string GetValueOrElement(IElement htmlNode, IPathInfo pathInfo)
         {
             string value;
             if (htmlNode.NodeType == NodeType.Text)

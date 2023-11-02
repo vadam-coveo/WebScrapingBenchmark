@@ -10,15 +10,13 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
     {
         public IWebScraperStrategy WebScraper { get; }
         public ConfigurationScenario Scenario { get; }
-        private IBenchmarkAggregator BenchmarkAggregator { get; }
         
         private IAggregator<ScrapingOutput> ScrapingOutputAggregator { get; }
         private IAggregator<ScrapingTimingResults> ScrapingTimingAggregator { get; }
-        public ScenarioRunner(IWebScraperStrategy webScraper, ConfigurationScenario scenario, IAggregator<ScrapingOutput> scrapingOutputAggregator, IAggregator<ScrapingTimingResults> scrapingTimingAggregator, IBenchmarkAggregator benchmarkAggregator)
+        public ScenarioRunner(IWebScraperStrategy webScraper, ConfigurationScenario scenario, IAggregator<ScrapingOutput> scrapingOutputAggregator, IAggregator<ScrapingTimingResults> scrapingTimingAggregator)
         {
             WebScraper = webScraper;
             Scenario = scenario;
-            BenchmarkAggregator = benchmarkAggregator;
             ScrapingOutputAggregator = scrapingOutputAggregator;
             ScrapingTimingAggregator = scrapingTimingAggregator;
         }
@@ -36,13 +34,9 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
             {
                 var scrapingResult = Evaluate(url);
 
-                benchmark.BenchmarkPerUrl.Add(scrapingResult.Timing); // todo : this can be gone
-
                 ScrapingOutputAggregator.Aggregate(scrapingResult.ScrapingOutput);
                 ScrapingTimingAggregator.Aggregate(scrapingResult.Timing);
             }
-
-            BenchmarkAggregator.AddBenchmark(benchmark); // todo : this can be gone
 
             ConsoleLogger.Info($"-------------------------------------------------------------------");
             ConsoleLogger.Debug("\r\r");
