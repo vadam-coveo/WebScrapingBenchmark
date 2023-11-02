@@ -21,9 +21,10 @@ namespace WebScrapingBenchmark.WebScrapingStrategies
 
         protected abstract IHtmlProcessor CreateHtmlProcessorInstance();
 
-        public void GoToUrl(string url)
+        public string GoToUrl(string url)
         {
             HtmlBody = DriverWrapper.GetHtml(url, TimeSpan.FromSeconds(2));
+            return HtmlBody;
         }
 
         public void Load()

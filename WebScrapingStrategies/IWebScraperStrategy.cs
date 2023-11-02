@@ -8,7 +8,7 @@ namespace WebScrapingBenchmark.WebScrapingStrategies
         /// Method to get to the desired url
         /// </summary>
         /// <param name="url"></param>
-        public void GoToUrl(string url);
+        public string GoToUrl(string url);
 
         /// <summary>
         /// Method to load the libraries for scraping, if needed
