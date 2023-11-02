@@ -1,4 +1,7 @@
-﻿using WebScrapingBenchmark.Framework.Config;
+﻿using Humanizer;
+using Humanizer.Localisation;
+using System.Globalization;
+using WebScrapingBenchmark.Framework.Config;
 using WebScrapingBenchmark.Framework.Logging;
 using WebScrapingBenchmark.Framework.ScrapingResultComparing;
 using WebScrapingBenchmark.Framework.UrlScrapingResults;
@@ -48,11 +51,15 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
 
            // todo : see if things need some catching 
 
-           ConsoleLogger.Info($"    Evaluating url {url}");
-
            results.Timing.GoToUrlTiming = Evaluate(()=> WebScraper.GoToUrl(url));
+           ConsoleLogger.Debug("\r\r\r");
+
+            ConsoleLogger.Info($"\t\t{FormatHelper.StringifyDuration(results.Timing.GoToUrlTiming)} Browsed to url {url}");
 
            results.Timing.LoadTiming = Evaluate(() => WebScraper.Load());
+           ConsoleLogger.Debug($"\t\t{FormatHelper.StringifyDuration(results.Timing.LoadTiming)} Loading libraries");
+
+           ConsoleLogger.Debug("\r\r");
 
            EvaluateMetadataExtraction(results);
 
@@ -71,7 +78,7 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
                 {
                     bool excludedContent = false;
                     var duration = Evaluate(() => excludedContent = WebScraper.ExcludeHtml(selector));
-                    ConsoleLogger.Debug($"          Excluded = {excludedContent} for {selector.Type} selector {selector.Path}");
+                    ConsoleLogger.Debug($"\t\t{FormatHelper.StringifyDuration(duration)} \t Excluded = {excludedContent} for {selector.Type} selector {selector.Path}");
 
                     result.ScrapingOutput.RegisterContentExclusion(selector.Path, excludedContent);
                     result.Timing.ContentExclusionTiming.Add(new ElementTiming
@@ -96,7 +103,7 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
                 {
                     IEnumerable<string> extraction = new List<string>();
                     var duration = Evaluate(() => { extraction = WebScraper.ExtractMetadata(metadata.Value); });
-                    ConsoleLogger.Debug($"          Extracted = {extraction.Count()} values for {metadata.Value.Type} selector {metadata.Value.Path}");
+                    ConsoleLogger.Debug($"\t\t{FormatHelper.StringifyDuration(duration)} \t Extracted = {extraction.Count()} values for {metadata.Value.Type} selector {metadata.Value.Path}");
 
                     result.ScrapingOutput.RegisterMetadata(metadata.Value.Path, extraction);
                     result.Timing.MetadataExtractionTiming.Add(new ElementTiming
