@@ -49,8 +49,8 @@ namespace WebScrapingBenchmark.Framework.Reporting
                 reportingEntries.Add(CreateConsoleReportingEntry("Load", scenarioGroup, result => result.LoadTiming));
                 reportingEntries.Add(CreateConsoleReportingEntry("GetHtmlResult", scenarioGroup, result => result.GetHtmlResultTiming));
 
-                reportingEntries.Add(CreateConsoleReportingEntry("MetadataExtraction", scenarioGroup, result => result.AverageMetadataExtraction.Value));
-                reportingEntries.Add(CreateConsoleReportingEntry("ContentExclusion", scenarioGroup, result => result.AverageContentExclusion.Value));
+                reportingEntries.Add(CreateConsoleReportingEntry("MetadataExtraction", scenarioGroup, result => result.TotalMetadataExtractionTime.Value));
+                reportingEntries.Add(CreateConsoleReportingEntry("ContentExclusion", scenarioGroup, result => result.TotalContentExclusionTime.Value));
 
                 reportingEntries.Add(CreateConsoleReportingEntry("TotalScrapingTime", scenarioGroup, result => result.TotalScrapingTime.Value));
 
