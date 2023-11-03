@@ -1,5 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data;
+using System.Dynamic;
 using System.Globalization;
 using System.Text;
 using AsciiTableFormatter;
@@ -31,6 +33,9 @@ namespace WebScrapingBenchmark.Framework.Reporting
                 }
             }
 
+
+            ReportResultsV2();
+            return;
             ConsoleLogger.WriteLine("Results:");
 
             var resultsGroupByScenarioIdentifier =
@@ -56,6 +61,40 @@ namespace WebScrapingBenchmark.Framework.Reporting
             }
         }
 
+        public void ReportResultsV2()
+        {
+            foreach (var scenarioGroup in ScrapingMetricsAggregator.Items.GroupBy(item => item.ScenarioIdentifier))
+            {
+                var dt = new DataTable();
+                dt.Columns.Add("Metric");
+
+                var scrapers = ScrapingMetricsAggregator.Items.Select(x => x.ScraperName).Distinct().Count();
+
+                for (var i = 0; i < scrapers; i++)
+                {
+                    dt.Columns.Add($"{i + 1} place");
+                }
+
+
+                FillDatarowFromBestToWorst(dt, "GoToUrl", scenarioGroup, result => result.GoToUrlTiming);
+                FillDatarowFromBestToWorst(dt, "Load", scenarioGroup, result => result.LoadTiming);
+                FillDatarowFromBestToWorst(dt, "Metadata Extraction Time", scenarioGroup, result => result.TotalMetadataExtractionTime.Value);
+                FillDatarowFromBestToWorst(dt, "Content Exclusion Time", scenarioGroup, result => result.TotalContentExclusionTime.Value);
+                FillDatarowFromBestToWorst(dt, "GetHtmlResult Time", scenarioGroup, result => result.GetHtmlResultTiming);
+                FillDatarowFromBestToWorst(dt, "Total Scraping Time", scenarioGroup, result => result.TotalScrapingTime.Value);
+
+
+                var output = AsciiTableGenerator.CreateAsciiTableFromDataTable(dt);
+
+                ConsoleLogger.Warn(scenarioGroup.Key);
+                ConsoleLogger.Info($"Initial HTML in bytes: {scenarioGroup.ElementAt(0).InitialHtmlBytes.Bytes().Humanize()}");
+                ConsoleLogger.Info($"Final HTML in bytes:   {scenarioGroup.First(result => result.ScraperName == nameof(BaselineStrategy)).FinalHtmlBytes.Bytes().Humanize()}\r\n");
+                Console.Write(output);
+            }
+        }
+
+        
+
         private static ConsoleReportingEntry CreateConsoleReportingEntry(string metric,
                                                                          IEnumerable<ScrapingMetrics> group,
                                                                          Func<ScrapingMetrics, TimeSpan> criteria)
@@ -72,6 +111,25 @@ namespace WebScrapingBenchmark.Framework.Reporting
                                              FormatHelper.FormatStrategyName(worst?.ScraperName ?? "None"));
         }
 
+
+        private void FillDatarowFromBestToWorst(DataTable dt, string metric, IEnumerable<ScrapingMetrics> group, Func<ScrapingMetrics, TimeSpan> criteria)
+        {
+            var dr = dt.NewRow();
+            dr[0] = metric;
+            var ordered = group.OrderBy(criteria).ToList();
+
+            var worst = criteria.Invoke(ordered.Last());
+
+            var columnIndex = 1;
+            foreach (var soretedMetric in ordered)
+            {
+                dr[columnIndex] = $"{FormatHelper.FormatStrategyName(soretedMetric?.ScraperName ?? "None")} : {FormatHelper.StringifyDifference(criteria.Invoke(soretedMetric), worst)}";
+                columnIndex++;
+            }
+
+            dt.Rows.Add(dr);
+        }
+        
         private static ScrapingMetrics? GetBest(IEnumerable<ScrapingMetrics> group, Func<ScrapingMetrics, TimeSpan> criteria)
         {
             return group.OrderBy(criteria).FirstOrDefault(result => criteria.Invoke(result) != TimeSpan.Zero);

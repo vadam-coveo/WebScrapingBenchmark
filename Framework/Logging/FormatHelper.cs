@@ -44,6 +44,23 @@ namespace WebScrapingBenchmark.Framework.Logging
             return $"{StringifyDuration(duration)} ({differenceSign}{StringifyDuration(difference)})";
         }
 
+        public static string StringifyDifference(TimeSpan duration, TimeSpan comparableDuration)
+        {
+            var difference = duration - comparableDuration;
+
+            if (difference == TimeSpan.Zero) return StringifyDuration(duration);
+
+            var differenceSign = "+";
+
+            if (difference < TimeSpan.Zero)
+            {
+                differenceSign = "-";
+                difference = difference.Negate();
+            }
+
+            return $"{FormatDuration(duration).PadRight(10)}" + ($"({differenceSign}{FormatDuration(difference)})".PadLeft(10));
+        }
+
         public static string FormatDuration(TimeSpan duration)
         {
             var milis = Convert.ToDecimal(duration.Ticks) / (decimal)10000;
@@ -58,7 +75,7 @@ namespace WebScrapingBenchmark.Framework.Logging
 
         public static string FormatStrategyName(string name)
         {
-            return name.PadRight(40);
+            return name.PadRight(35);
         }
 
         public static long GetBytes(string input)

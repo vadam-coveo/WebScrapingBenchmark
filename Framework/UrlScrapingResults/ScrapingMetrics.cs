@@ -1,4 +1,6 @@
 ﻿using CsvHelper.Configuration.Attributes;
+using System.ComponentModel;
+using WebScrapingBenchmark.Framework.Reporting;
 
 namespace WebScrapingBenchmark.Framework.UrlScrapingResults
 {
@@ -9,6 +11,13 @@ namespace WebScrapingBenchmark.Framework.UrlScrapingResults
         private List<ContentExclusionKpi>? _exclusionKpi;
 
         public long ExcludedBytesPerTick => ExcludedBytes / TotalContentExclusionTime.Value.Ticks;
+        public decimal ExcludedRatio => (Convert.ToDecimal(ExcludedBytes)/ Convert.ToDecimal(InitialHtmlBytes)) * 100;
+        public int NbSuccessfulExclusions => ContentExclusions.Count(x => x.Value > 0);
+        public int NbUnmatchedExclusions => ContentExclusions.Count - NbSuccessfulExclusions;
+
+        [CsvHelper.Configuration.Attributes.TypeConverter(typeof(TimespanConverter))]
+        public TimeSpan TotalTimeWastedOnUnmatchedExclusions =>
+            TimeSpan.FromTicks((ExclusionKpi.Where(x => x.ExcludedBytes == 0).Sum(x => x.Duration.Ticks)));
 
         public ScrapingMetrics(string url, string scenarioName, string scraperName) : base(url, scenarioName, scraperName)
         {

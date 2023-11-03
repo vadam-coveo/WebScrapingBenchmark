@@ -35,6 +35,12 @@ namespace WebScrapingBenchmark.Framework.HtmlProcessors
         public bool Remove(Selector selector)
         {
             bool removed = false;
+            var nodes = Select(selector);
+            if (nodes == null)
+            {
+                return false;
+            }
+
             foreach (var node in Select(selector))
             {
                 removed = true;
