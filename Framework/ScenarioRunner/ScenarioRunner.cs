@@ -1,4 +1,5 @@
-﻿using WebScrapingBenchmark.Framework.Config;
+﻿using Humanizer;
+using WebScrapingBenchmark.Framework.Config;
 using WebScrapingBenchmark.Framework.Logging;
 using WebScrapingBenchmark.Framework.UrlScrapingResults;
 using WebScrapingBenchmark.WebScrapingStrategies;
@@ -83,7 +84,7 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
 
                     var diff = before - after;
 
-                    ConsoleLogger.Debug($"\t{FormatHelper.StringifyDuration(duration)} \t {FormatHelper.GetFormattedByes(diff, 10)} [{(excludedContent ? "+" : "-")}] excluded for {selector.Type} selector {selector.Path}");
+                    ConsoleLogger.Debug($"\t{FormatHelper.StringifyDuration(duration)} \t {FormatHelper.GetFormattedByes(diff, 10)} [{(excludedContent ? "+" : "-")}] excluded for {selector.Type} selector {selector.Path.TrimEnd('\r').TrimEnd('\n')}".TrimEnd());
 
                     result.RegisterContentExclusion(selector.Path, diff);
                     result.ContentExclusionTiming.Add(new ElementTiming
@@ -108,7 +109,9 @@ namespace WebScrapingBenchmark.Framework.ScenarioRunner
                 {
                     IEnumerable<string> extraction = new List<string>();
                     var duration = Evaluate(() => { extraction = WebScraper.ExtractMetadata(metadata.Value); });
-                    ConsoleLogger.Debug($"\t{FormatHelper.StringifyDuration(duration)} \t Extracted = {extraction.Count()} values for {metadata.Value.Type} selector {metadata.Value.Path}");
+
+                    var bytes = extraction.Sum(FormatHelper.GetBytes);
+                    ConsoleLogger.Debug($"\t{FormatHelper.StringifyDuration(duration)} \t {FormatHelper.GetFormattedByes(bytes, 10)} [{(bytes>0 ? "+" : "-")}] {extraction.Count()} values extracted for metadata '{metadata.Key}' with selector {metadata.Value.Path.TrimEnd('\r').TrimEnd('\n')}".TrimEnd());
 
                     result.RegisterMetadata(metadata.Value.Path, extraction);
                     result.MetadataExtractionTiming.Add(new ElementTiming

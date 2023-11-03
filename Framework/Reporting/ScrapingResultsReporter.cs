@@ -56,7 +56,7 @@ namespace WebScrapingBenchmark.Framework.Reporting
 
                 ConsoleLogger.Warn(scenarioGroup.Key);
                 ConsoleLogger.Info($"Initial HTML in bytes: {scenarioGroup.ElementAt(0).InitialHtmlBytes.Bytes().Humanize()}");
-                ConsoleLogger.Info($"Final HTML in bytes:   {scenarioGroup.First(result => result.ScraperName == nameof(BaselineStrategy)).FinalHtmlBytes.Bytes().Humanize()}");
+                ConsoleLogger.Info($"Final HTML in bytes:   {scenarioGroup.First(result => result.ScraperName == nameof(Baseline)).FinalHtmlBytes.Bytes().Humanize()}");
                 ConsoleLogger.WriteLine(Formatter.Format(reportingEntries));
             }
         }
@@ -66,13 +66,13 @@ namespace WebScrapingBenchmark.Framework.Reporting
             foreach (var scenarioGroup in ScrapingMetricsAggregator.Items.GroupBy(item => item.ScenarioIdentifier))
             {
                 var dt = new DataTable();
-                dt.Columns.Add("Metric");
+                dt.Columns.Add("Web-Scraping Metric");
 
                 var scrapers = ScrapingMetricsAggregator.Items.Select(x => x.ScraperName).Distinct().Count();
 
                 for (var i = 0; i < scrapers; i++)
                 {
-                    dt.Columns.Add($"{i + 1} place");
+                    dt.Columns.Add($"{i + 1} place".PadLeft(40));
                 }
 
 
@@ -86,9 +86,16 @@ namespace WebScrapingBenchmark.Framework.Reporting
 
                 var output = AsciiTableGenerator.CreateAsciiTableFromDataTable(dt);
 
+                var baseline = scenarioGroup.First(result => result.ScraperName == nameof(Baseline));
+                var bytesBefore = baseline.InitialHtmlBytes.Bytes().Humanize();
+                var bytesAfter = baseline.FinalHtmlBytes.Bytes().Humanize();
+
+                ConsoleLogger.Info("\r\r");
                 ConsoleLogger.Warn(scenarioGroup.Key);
-                ConsoleLogger.Info($"Initial HTML in bytes: {scenarioGroup.ElementAt(0).InitialHtmlBytes.Bytes().Humanize()}");
-                ConsoleLogger.Info($"Final HTML in bytes:   {scenarioGroup.First(result => result.ScraperName == nameof(BaselineStrategy)).FinalHtmlBytes.Bytes().Humanize()}\r\n");
+                ConsoleLogger.Info($"Document size {bytesBefore} initial,  {bytesAfter} after exclusions ({baseline.DocumentReductionRatio}% reduction)");
+                ConsoleLogger.Info($"Exclusions {baseline.ExclusionsHit} matched, {baseline.ExclusionFail} failed  ({baseline.ExclusionsHitRate}% sucess rate) ");
+                ConsoleLogger.Info($"Metadata   {baseline.MetadataHit} matched,  {baseline.MetadataFail} failed  ({baseline.MetadataHitRate} % sucess rate) --> {baseline.MetadataBytesExtractedTotal.Bytes().Humanize()}  ({baseline.MetadataRatioAccordingToDocumentSize} % of initial html bytes)");
+                ConsoleLogger.Info("\r");
                 Console.Write(output);
             }
         }
@@ -115,7 +122,10 @@ namespace WebScrapingBenchmark.Framework.Reporting
         private void FillDatarowFromBestToWorst(DataTable dt, string metric, IEnumerable<ScrapingMetrics> group, Func<ScrapingMetrics, TimeSpan> criteria)
         {
             var dr = dt.NewRow();
+            var dr2 = dt.NewRow();
+            var dr3 = dt.NewRow();
             dr[0] = metric;
+
             var ordered = group.OrderBy(criteria).ToList();
 
             var worst = criteria.Invoke(ordered.Last());
@@ -123,11 +133,14 @@ namespace WebScrapingBenchmark.Framework.Reporting
             var columnIndex = 1;
             foreach (var soretedMetric in ordered)
             {
-                dr[columnIndex] = $"{FormatHelper.FormatStrategyName(soretedMetric?.ScraperName ?? "None")} : {FormatHelper.StringifyDifference(criteria.Invoke(soretedMetric), worst)}";
+                dr[columnIndex] = $"{FormatHelper.FormatStrategyName(soretedMetric?.ScraperName ?? "None")}";
+                dr2[columnIndex] = $"{FormatHelper.StringifyDifference(criteria.Invoke(soretedMetric), worst)}";
                 columnIndex++;
             }
 
             dt.Rows.Add(dr);
+            dt.Rows.Add(dr2);
+            dt.Rows.Add(dr3);
         }
         
         private static ScrapingMetrics? GetBest(IEnumerable<ScrapingMetrics> group, Func<ScrapingMetrics, TimeSpan> criteria)

@@ -4,7 +4,7 @@ using WebScrapingBenchmark.Framework.HtmlProcessors;
 
 namespace WebScrapingBenchmark.WebScrapingStrategies
 {
-    public class BaselineStrategy : IWebScraperStrategy, IDisposable
+    public class Baseline : IWebScraperStrategy, IDisposable
     {
         private IChromeDriverWrapper DriverWrapper { get; }
         private IHtmlProcessorFactory HtmlProcessorFactory { get; }
@@ -14,7 +14,7 @@ namespace WebScrapingBenchmark.WebScrapingStrategies
         private Lazy<IHtmlProcessor> AnglesharpProcessor;
         private Lazy<IHtmlProcessor> HtmlAgilityPackHtmlProcessor;
 
-        public BaselineStrategy(IChromeDriverWrapper driverWrapper, IHtmlProcessorFactory htmlProcessorFactory)
+        public Baseline(IChromeDriverWrapper driverWrapper, IHtmlProcessorFactory htmlProcessorFactory)
         {
             DriverWrapper = driverWrapper;
             HtmlProcessorFactory = htmlProcessorFactory;

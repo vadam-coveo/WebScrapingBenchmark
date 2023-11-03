@@ -3,9 +3,9 @@ using WebScrapingBenchmark.Framework.HtmlProcessors;
 
 namespace WebScrapingBenchmark.WebScrapingStrategies
 {
-    public class HtmlAgilityPackWithCss : HtmlProcessorBase
+    public class AgilityPk : HtmlProcessorBase
     {
-        public HtmlAgilityPackWithCss(IChromeDriverWrapper driverWrapper, IHtmlProcessorFactory htmlProcessorFactory) : base(driverWrapper, htmlProcessorFactory)
+        public AgilityPk(IChromeDriverWrapper driverWrapper, IHtmlProcessorFactory htmlProcessorFactory) : base(driverWrapper, htmlProcessorFactory)
         {
         }
 

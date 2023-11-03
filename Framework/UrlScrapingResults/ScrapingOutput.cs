@@ -9,8 +9,7 @@ namespace WebScrapingBenchmark.Framework.UrlScrapingResults
         public string FinalHtmlBody;
         public long InitialHtmlBytes { get; private set; }
         public long FinalHtmlBytes { get; private set; }
-        public long ExcludedBytes { get; private set; }
-        
+
         public ScrapingOutput(string url, string scenarioName, string scraperName) :base(url, scenarioName, scraperName)
         {
         }
@@ -29,8 +28,6 @@ namespace WebScrapingBenchmark.Framework.UrlScrapingResults
         {
             FinalHtmlBody = htmlBody;
             FinalHtmlBytes = FormatHelper.GetBytes(htmlBody);
-
-            ExcludedBytes = InitialHtmlBytes - FinalHtmlBytes;
         }
 
         public void RegisterInitialBody(string htmlBody)
