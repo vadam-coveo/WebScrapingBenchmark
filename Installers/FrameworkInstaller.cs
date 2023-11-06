@@ -45,9 +45,9 @@ namespace WebScrapingBenchmark.Installers
                 Component.For<IScrapingResultsReporter>().ImplementedBy<ConsoleTableResultReporter>()
                     .DependsOn(
                         Dependency.OnValue<int>(2), 
-                        Dependency.OnValue<string>("Compounded Results Per Scraper"),
-                        Dependency.OnValue<Func<ScrapingMetrics, string>>((ScrapingMetrics metric) => metric.ScraperName))
-                    .Named($"{nameof(ConsoleTableResultReporter)}-PerScraper"),
+                        Dependency.OnValue<string>("Compounded Results Per Scenario"),
+                        Dependency.OnValue<Func<ScrapingMetrics, string>>((ScrapingMetrics metric) => metric.ScenarioName))
+                    .Named($"{nameof(ConsoleTableResultReporter)}-PerScenario"),
 
                 Component.For<IScrapingResultsReporter>().ImplementedBy<CsvResultReporter>()
                     .DependsOn(Dependency.OnValue<int>(3))
