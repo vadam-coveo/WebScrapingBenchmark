@@ -1,6 +1,7 @@
 ﻿
 
 using Castle.Windsor;
+using System.Text;
 using WebScrapingBenchmark.Framework.Config;
 using WebScrapingBenchmark.Framework.Logging;
 using WebScrapingBenchmark.Framework.Reporting;
@@ -21,15 +22,15 @@ container.Install(new FrameworkInstaller(),
 
 var runners = container.ResolveAll<IScenarioRunner>().OrderBy(x=> x.WebScraper.GetType().Name).ToList();
 
-var previousScraper = (IWebScraperStrategy)null;
+var previousScraper = "";
 
 foreach (var runner in runners)
 {
     try
     {
-        if (previousScraper == null || previousScraper != runner.WebScraper)
+        if (previousScraper == null || previousScraper != runner.WebScraper.GetType().Name)
         {
-            previousScraper = runner.WebScraper;
+            previousScraper = runner.WebScraper.GetType().Name;
             ConsoleLogger.Warn($"\r\r-----------------Scraper: {runner.WebScraper.GetType().Name}-----------------");
         }
 
@@ -41,10 +42,18 @@ foreach (var runner in runners)
     }
 }
 
-var scrapingResultsReporter = container.Resolve<IScrapingResultsReporter>();
-scrapingResultsReporter.ReportResults();
-
-// todo : interpret metrics
+var scrapingResultsReporter = container.ResolveAll<IScrapingResultsReporter>().OrderBy(x=> x.Index).ToList();
+foreach (var reporter in scrapingResultsReporter)
+{
+    try
+    {
+        reporter.ReportResults();
+    }
+    finally
+    {
+        container.Release(reporter);
+    }
+}
 
 container.Dispose();
 

@@ -5,6 +5,7 @@ using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using WebScrapingBenchmark.Framework.ChromeDriver;
 using WebScrapingBenchmark.Framework.Reporting;
+using WebScrapingBenchmark.Framework.Reporting.Reporters;
 using WebScrapingBenchmark.Framework.ScenarioRunner;
 using WebScrapingBenchmark.Framework.UrlScrapingResults;
 
@@ -19,15 +20,37 @@ namespace WebScrapingBenchmark.Installers
 
             container.Register(Component.For<IChromeDriverWrapper>().ImplementedBy<ChromeDriverWrapper>()); // we'll try with 1 singleton instance for now since we're not running anything in parallel
             container.Register(Component.For<ICache<CachedRequest>>().ImplementedBy<Cache<CachedRequest>>());
-            container.Register(Component.For<IScrapingResultsReporter>().ImplementedBy<ScrapingResultsReporter>());
+
 
             RegisterAggregators(container);
+            RegisterReporters(container);
         }
         
         private void RegisterAggregators(IWindsorContainer container)
         {
             container.Register(
                 Component.For<IAggregator<ScrapingMetrics>>().ImplementedBy<ConcurrentAggregator<ScrapingMetrics>>()
+            );
+        }
+        private void RegisterReporters(IWindsorContainer container)
+        {
+            container.Register(
+                Component.For<IScrapingResultsReporter>().ImplementedBy<ConsoleTableResultReporter>()
+                    .DependsOn(
+                        Dependency.OnValue<int>(1), 
+                        Dependency.OnValue<string>("Compounded Results Per URL"),
+                        Dependency.OnValue<Func<ScrapingMetrics, string>>((ScrapingMetrics metric) => metric.ScenarioIdentifier))
+                    .Named($"{nameof(ConsoleTableResultReporter)}-PerUrl"),
+
+                Component.For<IScrapingResultsReporter>().ImplementedBy<ConsoleTableResultReporter>()
+                    .DependsOn(
+                        Dependency.OnValue<int>(2), 
+                        Dependency.OnValue<string>("Compounded Results Per Scraper"),
+                        Dependency.OnValue<Func<ScrapingMetrics, string>>((ScrapingMetrics metric) => metric.ScraperName))
+                    .Named($"{nameof(ConsoleTableResultReporter)}-PerScraper"),
+
+                Component.For<IScrapingResultsReporter>().ImplementedBy<CsvResultReporter>()
+                    .DependsOn(Dependency.OnValue<int>(3))
             );
         }
     }

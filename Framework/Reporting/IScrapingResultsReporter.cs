@@ -2,6 +2,7 @@
 {
     public interface IScrapingResultsReporter
     {
+        public int Index { get; }
         void ReportResults();
     }
 }

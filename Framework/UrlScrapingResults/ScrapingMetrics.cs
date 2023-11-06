@@ -42,7 +42,7 @@ namespace WebScrapingBenchmark.Framework.UrlScrapingResults
         private static decimal GetRatio(long nominator, long denominator, int precision = 2)
         {
             if (denominator == 0) denominator = 1;
-
+            
             return Math.Round(Convert.ToDecimal(nominator * 100) / Convert.ToDecimal(denominator), precision);
         }
 
