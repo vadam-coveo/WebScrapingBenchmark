@@ -21,7 +21,7 @@ namespace WebscrapingBenchmark.NewStrategiesExecutor.Installers
 
             container.Register(
                 Component.For<ICacheWarmer>().ImplementedBy<FilesystemRequestCacheWarmer>(),
-                Component.For<ICacheWarmer>().ImplementedBy<ResultsWarmer>().DependsOn(Dependency.OnValue<string>(FilesystemJsonReporter.GetScraperFilterFileSearchPattern("RealBaseline"))),
+                Component.For<ICacheWarmer>().ImplementedBy<ResultsWarmer>().DependsOn(Dependency.OnValue<string>(FilesystemJsonReporter.GetScraperFilterFileSearchPattern("RealBaseline-*"))),
                 Component.For<IScrapingResultsReporter>().ImplementedBy<CsvResultReporter>().DependsOn(Dependency.OnValue<int>(3))
             );
         }
