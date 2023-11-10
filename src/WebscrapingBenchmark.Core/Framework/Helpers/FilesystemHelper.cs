@@ -42,6 +42,7 @@ namespace WebscrapingBenchmark.Core.Framework.Helpers
             public string RequestCacheDirectory { get; private set; }
             public string BaselineExecutorPath { get; private set; }
             public string NewStrategiesExecutorPath { get; private set; }
+            public string CsvOutputDirectory { get; private set; }
             public string ScenarioDirectoryPath { get; private set; }
             public string ChromiumPath { get; private set; }
 
@@ -53,6 +54,7 @@ namespace WebscrapingBenchmark.Core.Framework.Helpers
                 MetricsOutputDirectory = Path.Combine(WorkFolderPath, "Metrics");
                 RequestCacheDirectory = Path.Combine(WorkFolderPath, "Requests");
                 ScenarioDirectoryPath = Path.Combine(WorkFolderPath, "Scenarios");
+                CsvOutputDirectory = Path.Combine(WorkFolderPath, "Csv");
 
                 BaselineExecutorPath = GetExecutablePath("WebscrapingBenchmark.BaselineExecutor");
                 NewStrategiesExecutorPath = GetExecutablePath("WebscrapingBenchmark.NewStrategiesExecutor");
@@ -66,6 +68,7 @@ namespace WebscrapingBenchmark.Core.Framework.Helpers
                 SafeCreateDirectory(MetricsOutputDirectory);
                 SafeCreateDirectory(RequestCacheDirectory);
                 SafeCreateDirectory(ScenarioDirectoryPath);
+                SafeCreateDirectory(CsvOutputDirectory);
             }
 
             private void SafeCreateDirectory(string path)

@@ -4,6 +4,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.7.34202.233
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebScrapingBenchmark.Main", "src\WebScrapingBenchmark.Main\WebScrapingBenchmark.Main.csproj", "{FD50B0E9-4C43-4AD5-AB33-D16D0E2953FF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AE6431E7-229C-4182-B87B-88A8DB9DC199} = {AE6431E7-229C-4182-B87B-88A8DB9DC199}
+		{B5BBC4C4-5A55-42C6-87EA-505AE62060A8} = {B5BBC4C4-5A55-42C6-87EA-505AE62060A8}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebscrapingBenchmark.Core", "src\WebscrapingBenchmark.Core\WebscrapingBenchmark.Core.csproj", "{92616BDC-E1C0-41B6-8AA3-C28A14AE874D}"
 EndProject

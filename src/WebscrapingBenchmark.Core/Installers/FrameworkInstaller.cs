@@ -56,9 +56,6 @@ namespace WebscrapingBenchmark.Core.Installers
                         Dependency.OnValue<Func<ScrapingMetrics, string>>((ScrapingMetrics metric) => metric.ScenarioName))
                     .Named($"{nameof(ConsoleTableResultReporter)}-PerScenario"),
 
-                Component.For<IScrapingResultsReporter>().ImplementedBy<CsvResultReporter>()
-                    .DependsOn(Dependency.OnValue<int>(3)),
-
                 Component.For<IScrapingResultsReporter>().ImplementedBy<FilesystemJsonReporter>().DependsOn(Dependency.OnValue<int>(4))
             );
         }

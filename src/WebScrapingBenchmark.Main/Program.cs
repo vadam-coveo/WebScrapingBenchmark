@@ -4,9 +4,9 @@ using WebscrapingBenchmark.Core.Framework.Helpers;
 var directory = Path.Join(FilesystemHelper.Solution.RootPath, "TestCaseData");
 var filter = "*.json";
 
-int baselineProcessResult = RunProcess(FilesystemHelper.Solution.BaselineExecutorPath, new[] { directory, filter });
+RunProcess(FilesystemHelper.Solution.BaselineExecutorPath, new[] { directory, filter });
 
-int finalResult = RunProcess(FilesystemHelper.Solution.NewStrategiesExecutorPath, new[] { directory, filter });
+RunProcess(FilesystemHelper.Solution.NewStrategiesExecutorPath, new[] { directory, filter });
 
 int RunProcess(string path, string[] arguments)
 {

@@ -4,6 +4,7 @@ using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using WebscrapingBenchmark.Core.Framework.Caching;
 using WebscrapingBenchmark.Core.Framework.Interfaces;
+using WebscrapingBenchmark.Core.Framework.Reporting;
 using WebscrapingBenchmark.Core.Framework.Reporting.Reporters;
 using WebscrapingBenchmark.NewStrategiesExecutor.HtmlProcessors;
 using WebscrapingBenchmark.NewStrategiesExecutor.WebScrapingStrategies;
@@ -20,7 +21,8 @@ namespace WebscrapingBenchmark.NewStrategiesExecutor.Installers
 
             container.Register(
                 Component.For<ICacheWarmer>().ImplementedBy<FilesystemRequestCacheWarmer>(),
-                Component.For<ICacheWarmer>().ImplementedBy<ResultsWarmer>().DependsOn(Dependency.OnValue<string>(FilesystemJsonReporter.GetScraperFilterFileSearchPattern("RealBaseline")))
+                Component.For<ICacheWarmer>().ImplementedBy<ResultsWarmer>().DependsOn(Dependency.OnValue<string>(FilesystemJsonReporter.GetScraperFilterFileSearchPattern("RealBaseline"))),
+                Component.For<IScrapingResultsReporter>().ImplementedBy<CsvResultReporter>().DependsOn(Dependency.OnValue<int>(3))
             );
         }
 
