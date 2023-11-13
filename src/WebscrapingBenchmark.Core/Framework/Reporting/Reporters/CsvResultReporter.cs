@@ -19,7 +19,9 @@ namespace WebscrapingBenchmark.Core.Framework.Reporting.Reporters
 
         public void ReportResults()
         {
-            var path = Path.Combine(FilesystemHelper.Solution.CsvOutputDirectory, $"{DateTime.Now : s} - results.csv");
+            var filename = FilesystemHelper.ReplaceInvalidChars($"{DateTime.Now:s} - results.csv");
+
+            var path = Path.Combine(FilesystemHelper.Solution.CsvOutputDirectory, filename);
 
             using (var writer = new StreamWriter(path))
             {

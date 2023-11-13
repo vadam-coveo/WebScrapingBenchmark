@@ -5,6 +5,8 @@ namespace WebscrapingBenchmark.Core.Framework.Helpers
 {
     public static class FilesystemHelper
     {
+        public const string BaselineExecutorStrategyName = "RealBaseline";
+
         public static T FromJsonFile<T>(string filepath)
         {
             var jsonString = File.ReadAllText(filepath);
@@ -19,7 +21,10 @@ namespace WebscrapingBenchmark.Core.Framework.Helpers
 
             File.WriteAllText(filepath, jsonString);
         }
-
+        public static string ReplaceInvalidChars(string filename)
+        {
+            return string.Join("_", filename.Split(Path.GetInvalidFileNameChars()));
+        }
         public static string CreateMD5(string input)
         {
             using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create())

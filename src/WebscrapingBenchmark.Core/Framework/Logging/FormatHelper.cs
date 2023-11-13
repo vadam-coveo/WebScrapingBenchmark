@@ -6,18 +6,17 @@ namespace WebscrapingBenchmark.Core.Framework.Logging
 {
     public static class FormatHelper
     {
-        public static Lazy<NumberFormatInfo> _numberFormat = new(() => new NumberFormatInfo
+        public static Lazy<NumberFormatInfo> _NumberFormatForTicks = new(() => new NumberFormatInfo
         {
             NumberGroupSeparator = " ",
             NumberDecimalSeparator = ".",
             NumberDecimalDigits = 4
         });
 
-        public static Lazy<NumberFormatInfo> _numberFormatNoDecimals = new(() => new NumberFormatInfo
+        public static Lazy<NumberFormatInfo> _variableDecimalLengthNumberFormat = new(() => new NumberFormatInfo
         {
             NumberGroupSeparator = " ",
             NumberDecimalSeparator = ".",
-            NumberDecimalDigits = 0
         });
 
 
@@ -32,10 +31,10 @@ namespace WebscrapingBenchmark.Core.Framework.Logging
         {
             var milis = Convert.ToDecimal(duration.Ticks) / (decimal)10000;
 
-            return (milis.ToString("n", _numberFormat.Value) + " ms").PadLeft(17);
+            return (milis.ToString("n", _NumberFormatForTicks.Value) + " ms").PadLeft(17);
         }
-
-        public static string StringifyDurationDifference(TimeSpan duration, TimeSpan comparableDuration)
+        
+        public static string StringifyDifference(TimeSpan duration, TimeSpan comparableDuration)
         {
             if (duration == comparableDuration && duration == TimeSpan.Zero)
             {
@@ -44,7 +43,7 @@ namespace WebscrapingBenchmark.Core.Framework.Logging
 
             var difference = duration - comparableDuration;
 
-            if (difference == TimeSpan.Zero) return StringifyDuration(duration);
+            if (difference == TimeSpan.Zero) return FormatTwoColumns("", StringifyDuration(duration));
 
             var differenceSign = "+";
 
@@ -54,23 +53,12 @@ namespace WebscrapingBenchmark.Core.Framework.Logging
                 difference = difference.Negate();
             }
 
-            return $"{StringifyDuration(duration)} ({differenceSign}{StringifyDuration(difference)})";
+            return FormatTwoColumns($"{FormatDuration(duration)} ms", $"{differenceSign}{FormatDuration(difference)} ms");
         }
 
-        public static string StringifyDifference(TimeSpan duration, TimeSpan comparableDuration)
+        public static string FormatTwoColumns(string col1, string col2)
         {
-            var difference = duration - comparableDuration;
-
-            if (difference == TimeSpan.Zero) return StringifyDuration(duration);
-
-            var differenceSign = "+";
-
-            if (difference < TimeSpan.Zero)
-            {
-                differenceSign = "-";
-                difference = difference.Negate();
-            }
-            return $"{(FormatDuration(duration)+" ms").PadRight(20)} " + ($"({differenceSign}{FormatDuration(difference)} ms)".PadRight(20));
+            return col1.Trim().PadRight(18) + col2.Trim().PadLeft(18);
         }
 
         public static TimeSpan Sum(this IEnumerable<TimeSpan> timespans)
@@ -82,7 +70,7 @@ namespace WebscrapingBenchmark.Core.Framework.Logging
         public static string FormatDuration(TimeSpan duration)
         {
             var milis = Convert.ToDecimal(duration.Ticks) / (decimal)10000;
-            return milis.ToString("n", _numberFormat.Value);
+            return milis.ToString("n", _NumberFormatForTicks.Value);
         }
 
         public static string FormatDurationForExcel(TimeSpan duration)
@@ -93,12 +81,12 @@ namespace WebscrapingBenchmark.Core.Framework.Logging
 
         public static string FormatNumber(double number, int precision = 2)
         { 
-            return Math.Round(number, precision).ToString("n", precision == 0 ? _numberFormatNoDecimals.Value : _numberFormat.Value);
+            return Math.Round(number, precision).ToString("n", precision == 0 ? _variableDecimalLengthNumberFormat.Value : _NumberFormatForTicks.Value);
         }
 
         public static string FormatNumber(decimal number, int precision = 2)
         {
-            return Math.Round(number, precision).ToString("n", _numberFormat.Value);
+            return Math.Round(number, precision).ToString("n", _variableDecimalLengthNumberFormat.Value);
         }
 
         public static string FormatStrategyName(string name)
@@ -118,5 +106,6 @@ namespace WebscrapingBenchmark.Core.Framework.Logging
         {
             return input.Bytes().Humanize().PadLeft(padding);
         }
+
     }
 }
