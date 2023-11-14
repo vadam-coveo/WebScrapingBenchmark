@@ -53,7 +53,8 @@ namespace WebscrapingBenchmark.NewStrategiesExecutor.Installers
                 SummaryTable(4, "Total Metadata Extraction Time Per Scenario", (metric) => metric.TotalMetadataExtractionTime.Value),
                 SummaryTable(5, "Total Content Exclusion Time Per Scenario", (metric) => metric.TotalContentExclusionTime.Value),
                 SummaryTable(6, "Total Load Time Per Scenario", (metric) => metric.LoadTiming),
-                SummaryTable(7, "Total Scraping Time Per Scenario", (metric) => metric.TotalScrapingTime.Value)
+                SummaryTable(7, "Total time to provide final html", (metric) => metric.GetHtmlResultTiming),
+                SummaryTable(8, "Total Scraping Time Per Scenario", (metric) => metric.TotalScrapingTime.Value)
                 );
         }
 
