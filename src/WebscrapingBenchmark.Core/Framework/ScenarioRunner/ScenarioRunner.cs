@@ -1,5 +1,6 @@
 ﻿using WebscrapingBenchmark.Core.Framework.Caching;
 using WebscrapingBenchmark.Core.Framework.Config;
+using WebscrapingBenchmark.Core.Framework.Helpers;
 using WebscrapingBenchmark.Core.Framework.Interfaces;
 using WebscrapingBenchmark.Core.Framework.Logging;
 using WebscrapingBenchmark.Core.Framework.UrlScrapingResults;

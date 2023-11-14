@@ -2,7 +2,7 @@
 using System.Text;
 using Humanizer;
 
-namespace WebscrapingBenchmark.Core.Framework.Logging
+namespace WebscrapingBenchmark.Core.Framework.Helpers
 {
     public static class FormatHelper
     {
@@ -29,11 +29,11 @@ namespace WebscrapingBenchmark.Core.Framework.Logging
 
         public static string StringifyDuration(TimeSpan duration)
         {
-            var milis = Convert.ToDecimal(duration.Ticks) / (decimal)10000;
+            var milis = Convert.ToDecimal(duration.Ticks) / 10000;
 
             return (milis.ToString("n", _NumberFormatForTicks.Value) + " ms").PadLeft(17);
         }
-        
+
         public static string StringifyDifference(TimeSpan duration, TimeSpan comparableDuration)
         {
             if (duration == comparableDuration && duration == TimeSpan.Zero)
@@ -58,7 +58,7 @@ namespace WebscrapingBenchmark.Core.Framework.Logging
 
         public static string FormatTwoColumns(string col1, string col2)
         {
-            return col1.Trim().PadRight(18) + col2.Trim().PadLeft(18);
+            return col1.Trim().PadLeft(18) + col2.Trim().PadLeft(18);
         }
 
         public static TimeSpan Sum(this IEnumerable<TimeSpan> timespans)
@@ -69,18 +69,18 @@ namespace WebscrapingBenchmark.Core.Framework.Logging
 
         public static string FormatDuration(TimeSpan duration)
         {
-            var milis = Convert.ToDecimal(duration.Ticks) / (decimal)10000;
+            var milis = Convert.ToDecimal(duration.Ticks) / 10000;
             return milis.ToString("n", _NumberFormatForTicks.Value);
         }
 
         public static string FormatDurationForExcel(TimeSpan duration)
         {
-            var milis = Convert.ToDecimal(duration.Ticks) / (decimal)10000;
+            var milis = Convert.ToDecimal(duration.Ticks) / 10000;
             return milis.ToString("n", _excelNumberFormat.Value);
         }
 
         public static string FormatNumber(double number, int precision = 2)
-        { 
+        {
             return Math.Round(number, precision).ToString("n", precision == 0 ? _variableDecimalLengthNumberFormat.Value : _NumberFormatForTicks.Value);
         }
 
@@ -89,14 +89,9 @@ namespace WebscrapingBenchmark.Core.Framework.Logging
             return Math.Round(number, precision).ToString("n", _variableDecimalLengthNumberFormat.Value);
         }
 
-        public static string FormatStrategyName(string name)
-        {
-            return name.PadRight(12);
-        }
-
         public static long GetBytes(string input)
         {
-            if(string.IsNullOrEmpty(input))
+            if (string.IsNullOrEmpty(input))
                 return 0;
 
             return Encoding.ASCII.GetByteCount(input);

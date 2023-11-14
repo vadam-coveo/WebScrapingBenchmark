@@ -1,6 +1,7 @@
 ﻿using CsvHelper.Configuration.Attributes;
 using Newtonsoft.Json;
-using WebscrapingBenchmark.Core.Framework.Logging;
+using WebscrapingBenchmark.Core.Framework.Helpers;
+using WebscrapingBenchmark.Core.Framework.Helpers;
 using WebscrapingBenchmark.Core.Framework.Reporting;
 
 namespace WebscrapingBenchmark.Core.Framework.UrlScrapingResults

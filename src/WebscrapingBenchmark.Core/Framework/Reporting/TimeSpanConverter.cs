@@ -1,7 +1,7 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
-using WebscrapingBenchmark.Core.Framework.Logging;
+using WebscrapingBenchmark.Core.Framework.Helpers;
 
 namespace WebscrapingBenchmark.Core.Framework.Reporting
 {

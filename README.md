@@ -36,3 +36,5 @@ The WebscrapingBenchmark.Core references a signgle dll (from the connector's bui
 If you set a breakpoint in WebScrapingBenchmark.BaselineExecutor or WebScrapingBenchmark.NewStrategyExecutor, it won't hit! 
 That's because we are invoking a new processes from Main (because isolation yadayada)... You can change the solution's startup project to the one you wish to debug and run just that one. 
 Since results are stored in the filesystem (and overwritten during each run) there won't be any issue doing this. 
+
+If you change the name of strategies or scenarios, the results caching in the workfolder will need to be cleared in order to not create conflicts, at some point improve the ResultsWarmer

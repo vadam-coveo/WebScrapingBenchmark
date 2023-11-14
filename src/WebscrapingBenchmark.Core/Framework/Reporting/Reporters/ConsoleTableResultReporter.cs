@@ -143,6 +143,14 @@ namespace WebscrapingBenchmark.Core.Framework.Reporting.Reporters
             var columnIndex = 1;
             foreach (var scraper in OrderedScrapers!)
             {
+                if (!results.ContainsKey(scraper)) // this should never happen, unless you loaded the wrong result files (reset the folder)
+                {
+                    ConsoleLogger.Warn($"Unable to find results for scraper {scraper}!");
+                    dr[columnIndex] = "N/A";
+                    columnIndex++;
+                    continue;
+                }
+
                 dr[columnIndex] = $"{FormatHelper.StringifyDifference(results[scraper], baseline)}";
                 columnIndex++;
             }

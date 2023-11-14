@@ -83,10 +83,6 @@ namespace WebscrapingBenchmark.NewStrategiesExecutor.HtmlProcessors
 
                     return values;
                 }
-                else
-                {
-                    ConsoleLogger.Debug($"No element found matching the CSS selector: \"{selector}\".");
-                }
             }
             catch (Exception ex)
             {

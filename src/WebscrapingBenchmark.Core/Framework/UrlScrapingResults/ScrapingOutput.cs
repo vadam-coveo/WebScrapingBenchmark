@@ -1,4 +1,4 @@
-﻿using WebscrapingBenchmark.Core.Framework.Logging;
+﻿using WebscrapingBenchmark.Core.Framework.Helpers;
 
 namespace WebscrapingBenchmark.Core.Framework.UrlScrapingResults
 {

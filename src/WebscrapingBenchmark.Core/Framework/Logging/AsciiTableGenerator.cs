@@ -24,7 +24,7 @@ namespace WebscrapingBenchmark.Core.Framework.Logging
                 var rowBuilder = new StringBuilder();
                 for (var j = 0; j < table.Columns.Count; j++)
                 {
-                    rowBuilder.Append(PadWithSpaceAndSeperator(table.Rows[i][j].ToString().Trim(),
+                    rowBuilder.Append(PadWithSpaceAndSeperator(table.Rows[i][j].ToString(),
                         lenghtByColumnDictionary[j]));
                 }
                 tableBuilder.AppendLine(rowBuilder.ToString());
@@ -36,7 +36,7 @@ namespace WebscrapingBenchmark.Core.Framework.Logging
         {
             for (var i = 0; i < table.Columns.Count; i++)
             {
-                var columName = table.Columns[i].ColumnName.Trim();
+                var columName = table.Columns[i].ColumnName;
                 var paddedColumNames = PadWithSpaceAndSeperator(ToTitleCase(columName), lenghtByColumnDictionary[i]);
                 builder.Append(paddedColumNames);
             }
@@ -57,7 +57,7 @@ namespace WebscrapingBenchmark.Core.Framework.Logging
                 var length = new int[table.Rows.Count];
                 for (var j = 0; j < table.Rows.Count; j++)
                 {
-                    length[j] = table.Rows[j][i].ToString().Trim().Length;
+                    length[j] = table.Rows[j][i].ToString().Length;
                 }
                 lengthByColumn[i] = length.Max();
             }
@@ -70,7 +70,7 @@ namespace WebscrapingBenchmark.Core.Framework.Logging
             var dictionary = new Dictionary<int, int>();
             for (var i = 0; i < table.Columns.Count; i++)
             {
-                var columnNameLength = table.Columns[i].ColumnName.Trim().Length;
+                var columnNameLength = table.Columns[i].ColumnName.Length;
                 dictionary[i] = columnNameLength > lenghtByColumnDictionary[i]
                     ? columnNameLength
                     : lenghtByColumnDictionary[i];
