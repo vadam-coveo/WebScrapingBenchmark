@@ -9,6 +9,7 @@ using WebscrapingBenchmark.Core.Framework.Reporting.Reporters;
 using WebscrapingBenchmark.Core.Framework.UrlScrapingResults;
 using WebscrapingBenchmark.NewStrategiesExecutor.HtmlProcessors;
 using WebscrapingBenchmark.NewStrategiesExecutor.WebScrapingStrategies;
+using static WebscrapingBenchmark.Core.Framework.Reporting.Reporters.ConsoleTableResultReporter;
 using Component = Castle.MicroKernel.Registration.Component;
 
 namespace WebscrapingBenchmark.NewStrategiesExecutor.Installers
@@ -54,11 +55,12 @@ namespace WebscrapingBenchmark.NewStrategiesExecutor.Installers
                 SummaryTable(5, "Total Content Exclusion Time Per Scenario", (metric) => metric.TotalContentExclusionTime.Value),
                 SummaryTable(6, "Total Load Time Per Scenario", (metric) => metric.LoadTiming),
                 SummaryTable(7, "Total time to provide final html", (metric) => metric.GetHtmlResultTiming),
-                SummaryTable(8, "Total Scraping Time Per Scenario", (metric) => metric.TotalScrapingTime.Value)
+                SummaryTable(8, "Total Scraping Time Per Scenario", (metric) => metric.TotalScrapingTime.Value),
+                SummaryTable(8, "Total Scraping Time Per Scenario (averaged per url)", (metric) => metric.TotalScrapingTime.Value, AggregatingMethod.Avg)
                 );
         }
 
-        private IRegistration SummaryTable(int index, string name, Func<ScrapingMetrics, TimeSpan> criteria)
+        private IRegistration SummaryTable(int index, string name, Func<ScrapingMetrics, TimeSpan> criteria, AggregatingMethod aggregatingMethod = AggregatingMethod.Sum)
         {
             return Component.For<IScrapingResultsReporter>().ImplementedBy<SingleCriteriaConsoleTableReporter>()
                 .DependsOn(
@@ -66,7 +68,9 @@ namespace WebscrapingBenchmark.NewStrategiesExecutor.Installers
                     Dependency.OnValue<string>(name),
                     Dependency.OnValue<Func<ScrapingMetrics, string>>((ScrapingMetrics metric) =>
                         metric.ScenarioName),
-                    Dependency.OnValue<Func<ScrapingMetrics, TimeSpan>>(criteria))
+                    Dependency.OnValue<Func<ScrapingMetrics, TimeSpan>>(criteria),
+                    Dependency.OnValue<AggregatingMethod>(aggregatingMethod)
+                    )
                 .Named($"{nameof(SingleCriteriaConsoleTableReporter)}-{name}");
         }
     }

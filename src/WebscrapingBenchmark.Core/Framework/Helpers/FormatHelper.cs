@@ -19,6 +19,18 @@ namespace WebscrapingBenchmark.Core.Framework.Helpers
             NumberDecimalSeparator = ".",
         });
 
+        public static Lazy<NumberFormatInfo> _twoDigitsRound = new(() => new NumberFormatInfo
+        {
+            NumberGroupSeparator = " ",
+            NumberDecimalSeparator = ".",
+            NumberDecimalDigits = 2
+        });
+
+        public static Lazy<NumberFormatInfo> _noDecimals = new(() => new NumberFormatInfo
+        {
+            NumberGroupSeparator = " ",
+            NumberDecimalDigits = 0
+        });
 
         public static Lazy<NumberFormatInfo> _excelNumberFormat = new(() => new NumberFormatInfo
         {
@@ -56,6 +68,35 @@ namespace WebscrapingBenchmark.Core.Framework.Helpers
             return FormatTwoColumns($"{FormatDuration(duration)} ms", $"{differenceSign}{FormatDuration(difference)} ms");
         }
 
+        public static string StringifyDeltaWithBaseline(TimeSpan duration, TimeSpan comparableDuration)
+        {
+            var delta = GetTimesFasterSlower(duration, comparableDuration);
+            if(!delta.HasValue || duration == comparableDuration)
+                return FormatTwoColumns($"{FormatDuration(duration)} ms", "");
+
+            var absoluteDelta = Math.Abs(delta.Value);
+            var numberDecimals = absoluteDelta > 10 ? 0 : 2;
+
+            var formatted = absoluteDelta.ToString($"N{numberDecimals}", _variableDecimalLengthNumberFormat.Value);
+            var sign = delta.Value < 0 ? "-" : "+";
+
+            return FormatTwoColumns($"{FormatDuration(duration)} ms", $"{sign} {formatted} x");
+        }
+
+        public static decimal? GetTimesFasterSlower(TimeSpan duration, TimeSpan comparableDuration)
+        {
+            var isSlower = duration < comparableDuration;
+
+            var nominator = Convert.ToDecimal(isSlower ? comparableDuration.Ticks : duration.Ticks);
+            var denominator = Convert.ToDecimal(isSlower ? duration.Ticks : comparableDuration.Ticks);
+
+            if (denominator  == 0)
+                return null;
+
+            var result = (nominator / denominator);
+            return isSlower ? result * -1 : result;
+        }
+
         public static string FormatTwoColumns(string col1, string col2)
         {
             return col1.Trim().PadLeft(18) + col2.Trim().PadLeft(18);
@@ -86,7 +127,7 @@ namespace WebscrapingBenchmark.Core.Framework.Helpers
 
         public static string FormatNumber(decimal number, int precision = 2)
         {
-            return Math.Round(number, precision).ToString("n", _variableDecimalLengthNumberFormat.Value);
+            return Math.Round(number, precision).ToString("n", precision == 0 ? _variableDecimalLengthNumberFormat.Value : _NumberFormatForTicks.Value);
         }
 
         public static long GetBytes(string input)

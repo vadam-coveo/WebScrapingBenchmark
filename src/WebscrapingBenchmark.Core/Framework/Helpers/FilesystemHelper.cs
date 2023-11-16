@@ -84,7 +84,12 @@ namespace WebscrapingBenchmark.Core.Framework.Helpers
 
             private string GetExecutablePath(string projectName)
             {
-                return Path.Combine(RootPath, "src", projectName, "bin", "Debug", "net6.0", $"{projectName}.exe");
+#if DEBUG
+                var buildDir = "Debug";
+#else
+                var buildDir = "Release";
+#endif
+                return Path.Combine(RootPath, "src", projectName, "bin", buildDir, "net6.0", $"{projectName}.exe");
             }
 
             private string GetRootPath()

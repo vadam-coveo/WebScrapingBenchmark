@@ -23,3 +23,6 @@ int RunProcess(string path, string[] arguments)
     process?.WaitForExit();
     return process?.ExitCode ?? -1;
 }
+
+
+var keyToExit = Console.ReadKey(true);

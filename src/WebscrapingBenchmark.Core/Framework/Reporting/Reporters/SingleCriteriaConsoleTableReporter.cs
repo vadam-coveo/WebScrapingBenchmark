@@ -6,12 +6,15 @@ namespace WebscrapingBenchmark.Core.Framework.Reporting.Reporters
 {
     public class SingleCriteriaConsoleTableReporter : ConsoleTableResultReporter
     {
-        private Func<ScrapingMetrics, TimeSpan> _criteria;
+        private Func<ScrapingMetrics, TimeSpan> Criteria { get; }
 
-        public SingleCriteriaConsoleTableReporter(int index, string reporterName, Func<ScrapingMetrics, string> grouping, Func<ScrapingMetrics, TimeSpan> criteria, IAggregator<ScrapingMetrics> scrapingMetricsAggregator) 
+        private AggregatingMethod AggregatingMethod { get; }
+
+        public SingleCriteriaConsoleTableReporter(int index, string reporterName, Func<ScrapingMetrics, string> grouping, Func<ScrapingMetrics, TimeSpan> criteria, IAggregator<ScrapingMetrics> scrapingMetricsAggregator, AggregatingMethod aggregatingMethod) 
             : base(index, reporterName, grouping, scrapingMetricsAggregator)
         {
-            _criteria = criteria;
+            Criteria = criteria;
+            AggregatingMethod = aggregatingMethod;
         }
 
         public override void ReportResults()
@@ -25,7 +28,7 @@ namespace WebscrapingBenchmark.Core.Framework.Reporting.Reporters
             
             foreach (var scenarioGroup in ScrapingMetricsAggregator.Items.GroupBy(Grouping))
             {
-                FillDatarowForTimingMetric(dt, $"({scenarioGroup.Select(x=> x.Url).Distinct().Count()} urls) {scenarioGroup.Key}", scenarioGroup, _criteria);
+                FillDatarowForTimingMetric(dt, $"({scenarioGroup.Select(x=> x.Url).Distinct().Count()} urls) {scenarioGroup.Key}", scenarioGroup, Criteria, AggregatingMethod);
             }
 
             var output = AsciiTableGenerator.CreateAsciiTableFromDataTable(dt);

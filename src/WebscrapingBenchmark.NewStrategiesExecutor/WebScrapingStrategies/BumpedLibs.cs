@@ -7,7 +7,7 @@ using WebscrapingBenchmark.NewStrategiesExecutor.HtmlProcessors;
 
 namespace WebscrapingBenchmark.NewStrategiesExecutor.WebScrapingStrategies
 {
-    public class NewVersionBaseline : IWebScraperStrategy, IDisposable
+    public class BumpedLibs : IWebScraperStrategy, IDisposable
     {
         private ICache<CachedRequest> RequestCache { get; }
         private IHtmlProcessorFactory HtmlProcessorFactory { get; }
@@ -18,7 +18,7 @@ namespace WebscrapingBenchmark.NewStrategiesExecutor.WebScrapingStrategies
         private Lazy<IHtmlProcessor> AnglesharpProcessor;
         private Lazy<IHtmlProcessor> HtmlAgilityPackHtmlProcessor;
 
-        public NewVersionBaseline(IHtmlProcessorFactory htmlProcessorFactory, ICache<CachedRequest> requestCache)
+        public BumpedLibs(IHtmlProcessorFactory htmlProcessorFactory, ICache<CachedRequest> requestCache)
         {
             RequestCache = requestCache;
             HtmlProcessorFactory = htmlProcessorFactory;

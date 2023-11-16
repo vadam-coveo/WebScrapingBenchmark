@@ -126,16 +126,24 @@ namespace WebscrapingBenchmark.Core.Framework.Reporting.Reporters
             ConsoleLogger.Info("\r");
         }
 
-        protected void FillDatarowForTimingMetric(DataTable dt, string metric, IEnumerable<ScrapingMetrics> dataSet, Func<ScrapingMetrics, TimeSpan> selector)
+        protected void FillDatarowForTimingMetric(DataTable dt, string metric, IEnumerable<ScrapingMetrics> dataSet, Func<ScrapingMetrics, TimeSpan> selector, AggregatingMethod aggregatingMethod = AggregatingMethod.Sum)
         {
             var dr = dt.NewRow();
             dr[0] = metric;
 
             var results = new Dictionary<string, TimeSpan>();
-
+            
             foreach (var kvp in dataSet.GroupBy(x => x.ScraperName))
             {
-                results[kvp.Key] = kvp.Select(selector).Sum();
+                results[kvp.Key] = aggregatingMethod switch
+                {
+                    AggregatingMethod.Sum => kvp.Select(selector).Sum(),
+                    AggregatingMethod.Avg => kvp.Select(selector).Average(),
+                    AggregatingMethod.Min => kvp.Select(selector).Min(),
+                    AggregatingMethod.Max => kvp.Select(selector).Max(),
+                    AggregatingMethod.StandardDeviation => GetStd(kvp.Select(selector)),
+                    _ => throw new ArgumentOutOfRangeException(nameof(aggregatingMethod), aggregatingMethod, null)
+                };
             }
 
             var baseline = results[FilesystemHelper.BaselineExecutorStrategyName];
@@ -151,11 +159,30 @@ namespace WebscrapingBenchmark.Core.Framework.Reporting.Reporters
                     continue;
                 }
 
-                dr[columnIndex] = $"{FormatHelper.StringifyDifference(results[scraper], baseline)}";
+                //dr[columnIndex] = $"{FormatHelper.StringifyDifference(results[scraper], baseline)}";
+                dr[columnIndex] = FormatHelper.StringifyDeltaWithBaseline(results[scraper], baseline);
                 columnIndex++;
             }
 
             dt.Rows.Add(dr);
+        }
+
+        private TimeSpan GetStd(IEnumerable<TimeSpan> results)
+        {
+            var dataset = results.Select(x => x.Ticks).ToList();
+            var avg = dataset.Average();
+
+            var std = Math.Sqrt(dataset.Average(v => Math.Pow(v - avg, 2)));
+            return TimeSpan.FromTicks(Convert.ToInt64(std));
+        }
+
+        public enum AggregatingMethod
+        {
+            Sum,
+            Avg,
+            Min,
+            Max,
+            StandardDeviation,
         }
 
         protected void FillBytesDiffDataRow(DataTable dt, string metric, IEnumerable<ScrapingMetrics> dataSet, Func<ScrapingMetrics, long> bytesSelector, Func<ScrapingMetrics, int> hitSelector)
